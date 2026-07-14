@@ -13,41 +13,49 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import xlsxwriter
 
-def fmt(x):
-    """Format numbers with a Unicode minus sign."""
-    return f"{x:.0f}".replace("-", "−")
 
-## File paths
-project_dir = ('/Users/elizabeth/Documents/GitHub/ice-sheet-sej-2025')
+# ============================================================
+# 1. SETTINGS
+# ============================================================
+
+project_dir = "/Users/elizabeth/Documents/GitHub/ice-sheet-sej-2025"
+
 data_file = os.path.join(
     project_dir,
     "data",
     "sej2025_split_panel_liz.csv"
 )
 
-# Read in data
-print(f"Reading Monte Carlo samples from:\n{data_file}\n")
+output_dir = os.path.join(
+    project_dir,
+    "output",
+    "tables"
+)
 
-mc_df = pd.read_csv(data_file)
-mc_df["sample_id"] = np.arange(len(mc_df))
+os.makedirs(output_dir, exist_ok=True)
 
-# Parse variable names
-time_lookup = {
+
+year_map = {
     "21": 2100,
     "22": 2200,
     "23": 2300
 }
 
-ice_sheet_lookup = {
+warming_map = {
+    "2": 2.0,
+    "35": 3.5,
+    "5": 5.0
+}
+
+ice_sheet_map = {
     "E": "EAIS",
     "W": "WAIS",
     "G": "GrIS",
     "SLR": "Total ice-sheet SLR"
 }
 
-process_lookup = {
+process_map = {
     "A": "Accumulation",
     "D": "Discharge",
     "R": "Runoff",
@@ -55,17 +63,71 @@ process_lookup = {
 }
 
 
+ice_sheet_order = [
+    "EAIS",
+    "WAIS",
+    "Total AIS",
+    "GrIS",
+    "Total ice-sheet SLR"
+]
+
+process_order = [
+    "Accumulation",
+    "Discharge",
+    "Runoff",
+    "Runoff minus accumulation"
+]
+
+process_ice_sheet_order = [
+    "EAIS",
+    "WAIS",
+    "GrIS"
+]
+
+warming_order = [
+    2.0,
+    3.5,
+    5.0
+]
+
+percentile_order = [
+    "5th",
+    "50th",
+    "95th"
+]
+
+statistic_order = [
+    "Mean ± SD",
+    "50%",
+    "5–95%",
+    "17–83%"
+]
+
+
+# ============================================================
+# 2. HELPER FUNCTIONS
+# ============================================================
+
+def fmt(value):
+    """
+    Format a rounded number using a Unicode minus sign.
+    """
+
+    if pd.isna(value):
+        return ""
+
+    return f"{value:.0f}".replace("-", "−")
+
+
 def parse_variable_name(column_name):
     """
-    Parse names such as:
+    Parse variable names such as:
+
         EA2_21
         WD35_22
         G5_23
         SLR2_21
     """
-
-    if column_name == "sample_id":
-        return None
 
     match = re.fullmatch(
         r"(SLR|[EWG])([ADR]?)(2|35|5)_(21|22|23)",
@@ -75,57 +137,129 @@ def parse_variable_name(column_name):
     if match is None:
         return None
 
-    ice_code, process_code, warming_code, time_code = match.groups()
+    ice_code, process_code, warming_code, year_code = (
+        match.groups()
+    )
 
-    process_code = process_code if process_code else "TOTAL"
+    process_code = process_code or "TOTAL"
 
     return {
         "variable": column_name,
         "ice_sheet_code": ice_code,
-        "ice_sheet": ice_sheet_lookup[ice_code],
+        "ice_sheet": ice_sheet_map[ice_code],
         "process_code": process_code,
-        "process": process_lookup[process_code],
+        "process": process_map[process_code],
         "warming_code": warming_code,
-        "warming": {
-            "2": 2.0,
-            "35": 3.5,
-            "5": 5.0
-        }[warming_code],
-        "year": time_lookup[time_code]
+        "warming": warming_map[warming_code],
+        "year": year_map[year_code]
     }
 
 
-variable_metadata = [
+def summarize_distributions(data, group_columns):
+    """
+    Calculate summary statistics for Monte Carlo distributions.
+    """
+
+    summary = (
+        data
+        .groupby(
+            group_columns,
+            observed=True
+        )["value"]
+        .agg(
+            mean="mean",
+            sd="std",
+            p05=lambda x: x.quantile(0.05),
+            p17=lambda x: x.quantile(0.17),
+            p50=lambda x: x.quantile(0.50),
+            p83=lambda x: x.quantile(0.83),
+            p95=lambda x: x.quantile(0.95)
+        )
+        .reset_index()
+    )
+
+    summary["Mean ± SD"] = (
+        summary["mean"].map(fmt)
+        + " ± "
+        + summary["sd"].map(fmt)
+    )
+
+    summary["50%"] = summary["p50"].map(fmt)
+
+    summary["5–95%"] = (
+        summary["p05"].map(fmt)
+        + "–"
+        + summary["p95"].map(fmt)
+    )
+
+    summary["17–83%"] = (
+        summary["p17"].map(fmt)
+        + "–"
+        + summary["p83"].map(fmt)
+    )
+
+    return summary
+
+
+# ============================================================
+# 3. READ AND PARSE MONTE CARLO DATA
+# ============================================================
+
+print(f"Reading Monte Carlo samples from:\n{data_file}\n")
+
+mc_df = pd.read_csv(data_file)
+
+mc_df["sample_id"] = np.arange(
+    len(mc_df),
+    dtype=int
+)
+
+
+unparsed_variables = [
+    column
+    for column in mc_df.columns
+    if column != "sample_id"
+    and parse_variable_name(column) is None
+]
+
+if unparsed_variables:
+    raise ValueError(
+        "The following variables could not be parsed:\n"
+        + "\n".join(unparsed_variables)
+    )
+
+
+metadata = [
     parse_variable_name(column)
     for column in mc_df.columns
+    if column != "sample_id"
 ]
 
-variable_metadata = [
-    metadata
-    for metadata in variable_metadata
-    if metadata is not None
-]
-
-meta_df = pd.DataFrame(variable_metadata)
+meta_df = pd.DataFrame(metadata)
 
 print(meta_df.head())
-print(f"\nParsed variables: {len(meta_df)}")
+print(f"\nParsed variables: {len(meta_df):,}")
 
-# Change from wide to long data format
-mc_long = mc_df.melt(
-    id_vars="sample_id",
-    var_name="variable",
-    value_name="value"
+
+# ============================================================
+# 4. RESHAPE TO LONG FORMAT
+# ============================================================
+
+mc_long = (
+    mc_df
+    .melt(
+        id_vars="sample_id",
+        var_name="variable",
+        value_name="value"
+    )
+    .merge(
+        meta_df,
+        on="variable",
+        how="left",
+        validate="many_to_one"
+    )
 )
 
-mc_long = mc_long.merge(
-    meta_df,
-    on="variable",
-    how="left",
-    validate="many_to_one"
-)
-
-# Optional formatted warming label for plotting
 mc_long["scenario_name"] = (
     mc_long["warming"]
     .map({
@@ -138,17 +272,29 @@ mc_long["scenario_name"] = (
 print(mc_long.head())
 print(f"\nLong-format rows: {len(mc_long):,}")
 
-# Add AIS (E + W)
+
+# ============================================================
+# 5. ADD TOTAL AIS
+# ============================================================
+
 mc_total = mc_long.loc[
     mc_long["process_code"] == "TOTAL"
 ].copy()
 
+
 ais_df = (
-    mc_total.loc[
+    mc_total
+    .loc[
         mc_total["ice_sheet_code"].isin(["E", "W"])
     ]
-    .pivot_table(
-        index=["sample_id", "warming", "warming_code", "year", "scenario_name"],
+    .pivot(
+        index=[
+            "sample_id",
+            "warming",
+            "warming_code",
+            "year",
+            "scenario_name"
+        ],
         columns="ice_sheet_code",
         values="value"
     )
@@ -156,157 +302,44 @@ ais_df = (
     .reset_index()
 )
 
-ais_df["value"] = ais_df["E"] + ais_df["W"]
+ais_df["value"] = (
+    ais_df["E"]
+    + ais_df["W"]
+)
+
 ais_df["variable"] = pd.NA
 ais_df["ice_sheet_code"] = "AIS"
 ais_df["ice_sheet"] = "Total AIS"
 ais_df["process_code"] = "TOTAL"
 ais_df["process"] = "Total"
 
-ais_df = ais_df[
-    mc_total.columns
-]
+ais_df = ais_df[mc_total.columns]
+
 
 mc_total_ext = pd.concat(
-    [mc_total, ais_df],
+    [
+        mc_total,
+        ais_df
+    ],
     ignore_index=True
 )
 
 
-# SUMMARY FUNCTIONS
-
-def calculate_summary(values):
-    """Calculate summary statistics for one Monte Carlo distribution."""
-
-    values = values.dropna()
-
-    return pd.Series({
-        "mean": values.mean(),
-        "sd": values.std(),
-        "p05": values.quantile(0.05),
-        "p17": values.quantile(0.17),
-        "p50": values.quantile(0.50),
-        "p83": values.quantile(0.83),
-        "p95": values.quantile(0.95)
-    })
-
-
-def format_estimate(median, lower, upper):
-    """Format a median and uncertainty range as median [lower, upper]."""
-
-    return f"{median:.0f} [{lower:.0f}, {upper:.0f}]"
-
 # ============================================================
-# 6. TABLE 1: ICE-SHEET CONTRIBUTIONS
-# ============================================================
-
-ice_sheet_order = [
-    "EAIS",
-    "WAIS",
-    "Total AIS",
-    "GrIS",
-    "Total ice-sheet SLR"
-]
-
-table1_stats = (
-    mc_total_ext
-    .groupby(
-        ["ice_sheet", "warming", "scenario_name", "year"],
-        observed=True
-    )["value"]
-    .apply(calculate_summary)
-    .unstack()
-    .reset_index()
-)
-
-# Add publication-style formatted columns
-table1_stats["Mean ± SD"] = table1_stats.apply(
-    lambda row: f"{row['mean']:.0f} ± {row['sd']:.0f}",
-    axis=1
-)
-
-table1_stats["Median [5–95%]"] = table1_stats.apply(
-    lambda row: format_estimate(
-        row["p50"],
-        row["p05"],
-        row["p95"]
-    ),
-    axis=1
-)
-
-table1_stats["Median [17–83%]"] = table1_stats.apply(
-    lambda row: format_estimate(
-        row["p50"],
-        row["p17"],
-        row["p83"]
-    ),
-    axis=1
-)
-
-# Control row order
-table1_stats["ice_sheet"] = pd.Categorical(
-    table1_stats["ice_sheet"],
-    categories=ice_sheet_order,
-    ordered=True
-)
-
-table1 = (
-    table1_stats[
-        [
-            "ice_sheet",
-            "warming",
-            "year",
-            "Mean ± SD",
-            "Median [5–95%]",
-            "Median [17–83%]"
-        ]
-    ]
-    .sort_values(["year", "warming", "ice_sheet"])
-    .reset_index(drop=True)
-)
-
-table1 = table1.rename(columns={
-    "ice_sheet": "Ice sheet",
-    "warming": "Warming (°C)",
-    "year": "Year"
-})
-
-# Put columns in the preferred order
-table1 = table1[
-    [
-        "Year",
-        "Ice sheet",
-        "Warming (°C)",
-        "Mean ± SD",
-        "50%",
-        "Median [5–95%]",
-        "Median [17–83%]"
-    ]
-]
-
-table1 = table1.rename(columns={
-    "Median [5–95%]": "5–95%",
-    "Median [17–83%]": "17–83%"
-})
-
-print(table1.head(10))
-
-
-
-
-# ============================================================
-# 7. ADD RUNOFF MINUS ACCUMULATION
+# 6. ADD RUNOFF MINUS ACCUMULATION
 # ============================================================
 
 process_df = mc_long.loc[
     mc_long["process_code"].isin(["A", "D", "R"])
 ].copy()
 
+
 runoff_accumulation = (
-    process_df.loc[
+    process_df
+    .loc[
         process_df["process_code"].isin(["A", "R"])
     ]
-    .pivot_table(
+    .pivot(
         index=[
             "sample_id",
             "ice_sheet_code",
@@ -330,73 +363,85 @@ runoff_accumulation["value"] = (
 
 runoff_accumulation["variable"] = pd.NA
 runoff_accumulation["process_code"] = "R-A"
-runoff_accumulation["process"] = "Runoff minus accumulation"
+runoff_accumulation["process"] = (
+    "Runoff minus accumulation"
+)
 
-# Match the column structure of process_df
 runoff_accumulation = runoff_accumulation[
     process_df.columns
 ]
 
+
 process_ext = pd.concat(
-    [process_df, runoff_accumulation],
+    [
+        process_df,
+        runoff_accumulation
+    ],
     ignore_index=True
 )
 
+
 # ============================================================
-# 8. TABLE 2: PROCESS CONTRIBUTIONS
+# 7. TABLE 1 SUMMARY DATA
 # ============================================================
 
-process_order = [
-    "Accumulation",
-    "Discharge",
-    "Runoff",
-    "Runoff minus accumulation"
-]
+table1_stats = summarize_distributions(
+    mc_total_ext,
+    [
+        "ice_sheet",
+        "warming",
+        "year"
+    ]
+)
 
-process_ice_sheet_order = [
-    "EAIS",
-    "WAIS",
-    "GrIS"
-]
+table1_stats["ice_sheet"] = pd.Categorical(
+    table1_stats["ice_sheet"],
+    categories=ice_sheet_order,
+    ordered=True
+)
 
-table2_stats = (
-    process_ext
-    .groupby(
+
+table1 = (
+    table1_stats[
         [
+            "year",
             "ice_sheet",
-            "process",
             "warming",
-            "scenario_name",
-            "year"
-        ],
-        observed=True
-    )["value"]
-    .apply(calculate_summary)
-    .unstack()
-    .reset_index()
+            "Mean ± SD",
+            "50%",
+            "5–95%",
+            "17–83%"
+        ]
+    ]
+    .sort_values([
+        "year",
+        "warming",
+        "ice_sheet"
+    ])
+    .rename(columns={
+        "year": "Year",
+        "ice_sheet": "Ice sheet",
+        "warming": "Warming (°C)"
+    })
+    .reset_index(drop=True)
 )
 
-table2_stats["Mean ± SD"] = table2_stats.apply(
-    lambda row: f"{row['mean']:.0f} ± {row['sd']:.0f}",
-    axis=1
-)
+print("\nTABLE 1")
+print(table1.head(10))
 
-table2_stats["Median [5–95%]"] = table2_stats.apply(
-    lambda row: format_estimate(
-        row["p50"],
-        row["p05"],
-        row["p95"]
-    ),
-    axis=1
-)
 
-table2_stats["Median [17–83%]"] = table2_stats.apply(
-    lambda row: format_estimate(
-        row["p50"],
-        row["p17"],
-        row["p83"]
-    ),
-    axis=1
+# ============================================================
+# 8. TABLE 2 SUMMARY DATA
+# ============================================================
+
+table2_stats = summarize_distributions(
+    process_ext,
+    [
+        "ice_sheet",
+        "process",
+        "warming",
+        "year"
+    ]
 )
 
 table2_stats["ice_sheet"] = pd.Categorical(
@@ -411,795 +456,824 @@ table2_stats["process"] = pd.Categorical(
     ordered=True
 )
 
+
 table2 = (
     table2_stats[
         [
+            "year",
             "ice_sheet",
             "process",
-            "scenario_name",
             "warming",
-            "year",
             "Mean ± SD",
-            "Median [5–95%]",
-            "Median [17–83%]"
+            "50%",
+            "5–95%",
+            "17–83%"
         ]
     ]
-    .sort_values(
-        ["year", "warming", "ice_sheet", "process"]
-    )
+    .sort_values([
+        "year",
+        "warming",
+        "process",
+        "ice_sheet"
+    ])
+    .rename(columns={
+        "year": "Year",
+        "ice_sheet": "Ice sheet",
+        "process": "Process",
+        "warming": "Warming (°C)"
+    })
     .reset_index(drop=True)
 )
 
-table2 = table2.rename(columns={
-    "ice_sheet": "Ice sheet",
-    "process": "Process",
-    "scenario_name": "Warming level",
-    "warming": "Warming (°C)",
-    "year": "Year"
-})
-
+print("\nTABLE 2")
 print(table2.head(12))
 
+
 # ============================================================
-# 7. PUBLICATION-STYLE TABLE 1
+# 9. PUBLICATION-STYLE TABLE 1 DATA
 # ============================================================
 
-table1_stats["5–95%"] = table1_stats.apply(
-    lambda row: f"{fmt(row['p05'])}–{fmt(row['p95'])}",
-    axis=1
+table1_wide = (
+    table1_stats
+    .pivot(
+        index=[
+            "year",
+            "ice_sheet"
+        ],
+        columns="warming",
+        values=statistic_order
+    )
+    .swaplevel(
+        0,
+        1,
+        axis=1
+    )
+    .reindex(
+        columns=pd.MultiIndex.from_product(
+            [
+                warming_order,
+                statistic_order
+            ],
+            names=[
+                "Warming",
+                "Statistic"
+            ]
+        )
+    )
 )
 
-table1_stats["17–83%"] = table1_stats.apply(
-    lambda row: f"{fmt(row['p17'])}–{fmt(row['p83'])}",
-    axis=1
-)
 
-table1_stats["50%"] = table1_stats["p50"].map(fmt)
-
-table1_stats["Mean ± SD"] = table1_stats.apply(
-    lambda row: f"{fmt(row['mean'])} ± {fmt(row['sd'])}",
-    axis=1
-)
-
-table1_wide = table1_stats.pivot(
-    index=["year", "ice_sheet"],
-    columns="warming",
-    values=[
-        "Mean ± SD",
-        "50%",
-        "5–95%",
-        "17–83%"
+table1_row_order = pd.MultiIndex.from_product(
+    [
+        sorted(
+            table1_stats["year"].unique()
+        ),
+        ice_sheet_order
+    ],
+    names=[
+        "year",
+        "ice_sheet"
     ]
-)
-
-table1_wide = table1_wide.swaplevel(
-    0,
-    1,
-    axis=1
-)
-
-warming_order = [2.0, 3.5, 5.0]
-
-statistic_order = [
-    "Mean ± SD",
-    "50%",
-    "5–95%",
-    "17–83%"
-]
-
-desired_columns = pd.MultiIndex.from_product(
-    [warming_order, statistic_order],
-    names=["Warming", "Statistic"]
 )
 
 table1_wide = table1_wide.reindex(
-    columns=desired_columns
+    table1_row_order
 )
 
-table1_wide = table1_wide.reset_index()
-
-table1_wide["ice_sheet"] = pd.Categorical(
-    table1_wide["ice_sheet"],
-    categories=ice_sheet_order,
-    ordered=True
-)
-
-table1_wide = (
-    table1_wide
-    .sort_values(["year", "ice_sheet"])
-    .reset_index(drop=True)
-)
 
 # ============================================================
-# 9. EXPORT TABLES
+# 10. PUBLICATION-STYLE TABLE 2 DATA
 # ============================================================
 
-output_dir = os.path.join(project_dir, "output", "tables")
-os.makedirs(output_dir, exist_ok=True)
+quantile_labels = {
+    0.05: "5th",
+    0.50: "50th",
+    0.95: "95th"
+}
 
-table_file = os.path.join(
-    output_dir,
-    "B25_ice_sheet_summary_tables.xlsx"
+
+table2_quantiles = (
+    process_ext
+    .groupby(
+        [
+            "year",
+            "warming",
+            "process",
+            "ice_sheet"
+        ],
+        observed=True
+    )["value"]
+    .quantile(
+        list(quantile_labels)
+    )
+    .rename_axis(
+        index=[
+            "year",
+            "warming",
+            "process",
+            "ice_sheet",
+            "quantile"
+        ]
+    )
+    .reset_index(name="value")
 )
 
-with pd.ExcelWriter(
-    table_file,
-    engine="xlsxwriter"
-) as writer:
+table2_quantiles["percentile"] = (
+    table2_quantiles["quantile"]
+    .map(quantile_labels)
+)
 
-    table1.to_excel(
-        writer,
-        sheet_name="Ice-sheet contributions",
-        index=False,
-        startrow=2
+
+table2_wide = (
+    table2_quantiles
+    .pivot(
+        index=[
+            "year",
+            "warming",
+            "percentile"
+        ],
+        columns=[
+            "process",
+            "ice_sheet"
+        ],
+        values="value"
     )
-
-    table2.to_excel(
-        writer,
-        sheet_name="Process contributions",
-        index=False,
-        startrow=2
-    )
-
-    workbook = writer.book
-
-    title_format = workbook.add_format({
-        "bold": True,
-        "font_size": 14
-    })
-
-    header_format = workbook.add_format({
-        "bold": True,
-        "text_wrap": True,
-        "valign": "top",
-        "border": 1
-    })
-
-    numeric_format = workbook.add_format({
-        "num_format": "0.0"
-    })
-
-    for sheet_name, table, title in [
-        (
-            "Ice-sheet contributions",
-            table1,
-            "Projected ice-sheet contributions to global mean sea level"
-        ),
-        (
-            "Process contributions",
-            table2,
-            "Projected ice-sheet contributions by process"
+    .reindex(
+        columns=pd.MultiIndex.from_product(
+            [
+                process_order,
+                process_ice_sheet_order
+            ],
+            names=[
+                "Process",
+                "Ice sheet"
+            ]
         )
-    ]:
+    )
+)
 
-        worksheet = writer.sheets[sheet_name]
 
-        worksheet.write("A1", title, title_format)
+table2_row_order = pd.MultiIndex.from_product(
+    [
+        sorted(
+            table2_quantiles["year"].unique()
+        ),
+        warming_order,
+        percentile_order
+    ],
+    names=[
+        "year",
+        "warming",
+        "percentile"
+    ]
+)
 
-        # Replace default headers with formatted headers
-        for col_num, column_name in enumerate(table.columns):
+table2_wide = table2_wide.reindex(
+    table2_row_order
+)
+
+
+# ============================================================
+# 11. EXPORT REGULAR SUMMARY TABLES
+# ============================================================
+
+def export_summary_tables(
+    table1_data,
+    table2_data,
+    output_file
+):
+    """
+    Export regular long-format summary tables to one workbook.
+    """
+
+    with pd.ExcelWriter(
+        output_file,
+        engine="xlsxwriter"
+    ) as writer:
+
+        table1_data.to_excel(
+            writer,
+            sheet_name="Ice-sheet contributions",
+            index=False,
+            startrow=2
+        )
+
+        table2_data.to_excel(
+            writer,
+            sheet_name="Process contributions",
+            index=False,
+            startrow=2
+        )
+
+        workbook = writer.book
+
+        title_format = workbook.add_format({
+            "bold": True,
+            "font_size": 14
+        })
+
+        header_format = workbook.add_format({
+            "bold": True,
+            "text_wrap": True,
+            "valign": "top",
+            "border": 1
+        })
+
+        numeric_format = workbook.add_format({
+            "num_format": "0.0"
+        })
+
+        sheet_settings = [
+            (
+                "Ice-sheet contributions",
+                table1_data,
+                "Projected ice-sheet contributions "
+                "to global mean sea level"
+            ),
+            (
+                "Process contributions",
+                table2_data,
+                "Projected ice-sheet contributions "
+                "by process"
+            )
+        ]
+
+        for sheet_name, table_data, title in sheet_settings:
+
+            worksheet = writer.sheets[sheet_name]
+
             worksheet.write(
-                2,
-                col_num,
-                column_name,
-                header_format
+                "A1",
+                title,
+                title_format
             )
 
-        worksheet.freeze_panes(3, 0)
-        worksheet.autofilter(
-            2,
-            0,
-            len(table) + 2,
-            len(table.columns) - 1
+            for column_number, column_name in enumerate(
+                table_data.columns
+            ):
+                worksheet.write(
+                    2,
+                    column_number,
+                    column_name,
+                    header_format
+                )
+
+            worksheet.freeze_panes(3, 0)
+
+            worksheet.autofilter(
+                2,
+                0,
+                len(table_data) + 2,
+                len(table_data.columns) - 1
+            )
+
+            worksheet.set_column("A:A", 12)
+            worksheet.set_column("B:B", 24)
+            worksheet.set_column("C:C", 26)
+            worksheet.set_column(
+                "D:D",
+                14,
+                numeric_format
+            )
+            worksheet.set_column("E:H", 20)
+
+            worksheet.hide_gridlines(2)
+
+
+# ============================================================
+# 12. EXPORT PUBLICATION-STYLE TABLE 1
+# ============================================================
+
+def export_publication_table1(
+    table_data,
+    output_file
+):
+    """
+    Export publication-style ice-sheet contribution table.
+    """
+
+    number_of_columns = (
+        1
+        + len(warming_order)
+        * len(statistic_order)
+    )
+
+    final_column = number_of_columns - 1
+
+    with pd.ExcelWriter(
+        output_file,
+        engine="xlsxwriter"
+    ) as writer:
+
+        workbook = writer.book
+
+        worksheet = workbook.add_worksheet(
+            "Table 1"
         )
 
-        # Default widths
-        worksheet.set_column("A:A", 22)
-        worksheet.set_column("B:B", 26)
-        worksheet.set_column("C:C", 15)
-        worksheet.set_column("D:D", 13, numeric_format)
-        worksheet.set_column("E:E", 10)
-        worksheet.set_column("F:H", 22)
+        writer.sheets["Table 1"] = worksheet
 
-print(f"Tables saved to:\n{table_file}")
+        title_format = workbook.add_format({
+            "bold": True,
+            "font_size": 12,
+            "align": "left",
+            "valign": "vcenter"
+        })
 
-# ============================================================
-# 8. EXPORT PUBLICATION-STYLE TABLE 1
-# ============================================================
+        group_header_format = workbook.add_format({
+            "bold": True,
+            "align": "center",
+            "valign": "vcenter",
+            "bottom": 1
+        })
 
-publication_file = os.path.join(
-    output_dir,
-    "B25_Table1_publication_format.xlsx"
-)
+        subheader_format = workbook.add_format({
+            "bold": True,
+            "align": "center",
+            "valign": "vcenter",
+            "bottom": 1
+        })
 
-with pd.ExcelWriter(
-    publication_file,
-    engine="xlsxwriter"
-) as writer:
+        year_format = workbook.add_format({
+            "bold": True,
+            "align": "left"
+        })
 
-    workbook = writer.book
-    worksheet = workbook.add_worksheet("Table 1")
-    writer.sheets["Table 1"] = worksheet
+        ice_sheet_format = workbook.add_format({
+            "align": "left",
+            "indent": 1
+        })
 
-    # --------------------------------------------------------
-    # FORMATS
-    # --------------------------------------------------------
+        value_format = workbook.add_format({
+            "align": "center"
+        })
 
-    title_format = workbook.add_format({
-        "bold": True,
-        "font_size": 12,
-        "align": "left",
-        "valign": "vcenter"
-    })
+        bottom_border_format = workbook.add_format({
+            "bottom": 1
+        })
 
-    group_header_format = workbook.add_format({
-        "bold": True,
-        "align": "center",
-        "valign": "vcenter",
-        "bottom": 1
-    })
-
-    subheader_format = workbook.add_format({
-        "bold": True,
-        "align": "center",
-        "valign": "vcenter",
-        "bottom": 1
-    })
-
-    year_format = workbook.add_format({
-        "bold": True,
-        "align": "left"
-    })
-
-    ice_sheet_format = workbook.add_format({
-        "align": "left",
-        "indent": 1
-    })
-
-    value_format = workbook.add_format({
-        "align": "center"
-    })
-
-    bottom_border_format = workbook.add_format({
-        "bottom": 1
-    })
-
-    # --------------------------------------------------------
-    # TITLE
-    # --------------------------------------------------------
-
-    worksheet.merge_range(
-        0,
-        0,
-        0,
-        12,
-        "Table 1. Projected sea-level rise contributions "
-        "from each ice sheet and combined",
-        title_format
-    )
-
-    # --------------------------------------------------------
-    # HEADERS
-    # --------------------------------------------------------
-
-    worksheet.merge_range(
-        2,
-        0,
-        3,
-        0,
-        "Year and ice sheet",
-        group_header_format
-    )
-
-    start_col = 1
-
-    for warming in warming_order:
+        worksheet.merge_range(
+            0,
+            0,
+            0,
+            final_column,
+            "Table 1. Projected sea-level rise "
+            "contributions from each ice sheet "
+            "and combined",
+            title_format
+        )
 
         worksheet.merge_range(
             2,
-            start_col,
-            2,
-            start_col + 3,
-            f"{warming:.1f}°C",
+            0,
+            3,
+            0,
+            "Year and ice sheet",
             group_header_format
         )
 
-        for offset, statistic in enumerate(statistic_order):
-            worksheet.write(
-                3,
-                start_col + offset,
-                statistic,
-                subheader_format
+        start_column = 1
+
+        for warming in warming_order:
+
+            end_column = (
+                start_column
+                + len(statistic_order)
+                - 1
             )
 
-        start_col += 4
+            worksheet.merge_range(
+                2,
+                start_column,
+                2,
+                end_column,
+                f"{warming:.1f}°C",
+                group_header_format
+            )
 
-    # --------------------------------------------------------
-    # DATA
-    # --------------------------------------------------------
+            for offset, statistic in enumerate(
+                statistic_order
+            ):
+                worksheet.write(
+                    3,
+                    start_column + offset,
+                    statistic,
+                    subheader_format
+                )
 
-    output_row = 4
+            start_column = end_column + 1
 
-    for year, year_group in table1_wide.groupby(
-        ("year", ""),
-        sort=True,
-        observed=True
-    ):
+        output_row = 4
 
-        worksheet.write(
-            output_row,
-            0,
-            int(year),
-            year_format
-        )
+        years = table_data.index.get_level_values(
+            "year"
+        ).unique()
 
-        output_row += 1
-
-        for _, row in year_group.iterrows():
-
-            ice_sheet = row[("ice_sheet", "")]
+        for year in years:
 
             worksheet.write(
                 output_row,
                 0,
-                str(ice_sheet),
-                ice_sheet_format
+                int(year),
+                year_format
             )
-
-            output_col = 1
-
-            for warming in warming_order:
-                for statistic in statistic_order:
-
-                    value = row[(warming, statistic)]
-
-                    worksheet.write(
-                        output_row,
-                        output_col,
-                        value,
-                        value_format
-                    )
-
-                    output_col += 1
 
             output_row += 1
 
-    # --------------------------------------------------------
-    # BOTTOM BORDER
-    # --------------------------------------------------------
+            year_data = table_data.xs(
+                year,
+                level="year"
+            )
 
-    for col in range(13):
-        worksheet.write_blank(
-            output_row,
-            col,
-            None,
-            bottom_border_format
+            for ice_sheet in ice_sheet_order:
+
+                if ice_sheet not in year_data.index:
+                    continue
+
+                worksheet.write(
+                    output_row,
+                    0,
+                    ice_sheet,
+                    ice_sheet_format
+                )
+
+                output_column = 1
+
+                for warming in warming_order:
+                    for statistic in statistic_order:
+
+                        value = year_data.loc[
+                            ice_sheet,
+                            (warming, statistic)
+                        ]
+
+                        worksheet.write(
+                            output_row,
+                            output_column,
+                            value,
+                            value_format
+                        )
+
+                        output_column += 1
+
+                output_row += 1
+
+        for column in range(number_of_columns):
+
+            worksheet.write_blank(
+                output_row,
+                column,
+                None,
+                bottom_border_format
+            )
+
+        worksheet.set_column(0, 0, 24)
+        worksheet.set_column(
+            1,
+            final_column,
+            14
         )
 
-    # --------------------------------------------------------
-    # LAYOUT
-    # --------------------------------------------------------
+        worksheet.freeze_panes(4, 1)
+        worksheet.hide_gridlines(2)
 
-    worksheet.set_column(0, 0, 24)
-    worksheet.set_column(1, 12, 14)
+        worksheet.set_landscape()
+        worksheet.fit_to_pages(1, 0)
 
-    worksheet.freeze_panes(4, 1)
-    worksheet.hide_gridlines(2)
-
-print(f"Publication-style table saved to:\n{publication_file}")
 
 # ============================================================
-# 9. CREATE PUBLICATION-STYLE PROCESS TABLE
+# 13. EXPORT PUBLICATION-STYLE TABLE 2
 # ============================================================
 
-process_order = [
-    "Accumulation",
-    "Discharge",
-    "Runoff",
-    "Runoff minus accumulation"
-]
-
-ice_sheet_order_process = [
-    "EAIS",
-    "WAIS",
-    "GrIS"
-]
-
-percentile_order = [
-    "5th",
-    "50th",
-    "95th"
-]
-
-
-def format_table_number(value):
+def export_publication_table2(
+    table_data,
+    output_file
+):
     """
-    Format a table value with no decimal places and use a
-    proper Unicode minus sign for negative values.
+    Export publication-style process contribution table.
     """
 
-    if pd.isna(value):
-        return ""
+    first_data_column = 2
 
-    return f"{value:.0f}".replace("-", "−")
-
-
-quantile_frames = []
-
-for percentile_name, quantile_value in [
-    ("5th", 0.05),
-    ("50th", 0.50),
-    ("95th", 0.95)
-]:
-
-    temp = (
-        process_ext
-        .groupby(
-            [
-                "year",
-                "warming",
-                "process",
-                "ice_sheet"
-            ],
-            observed=True
-        )["value"]
-        .quantile(quantile_value)
-        .reset_index(name="value")
+    columns_per_process = len(
+        process_ice_sheet_order
     )
 
-    temp["percentile"] = percentile_name
-
-    quantile_frames.append(temp)
-
-table2_quantiles = pd.concat(
-    quantile_frames,
-    ignore_index=True
-)
-
-table2_quantiles["process"] = pd.Categorical(
-    table2_quantiles["process"],
-    categories=process_order,
-    ordered=True
-)
-
-table2_quantiles["ice_sheet"] = pd.Categorical(
-    table2_quantiles["ice_sheet"],
-    categories=ice_sheet_order_process,
-    ordered=True
-)
-
-table2_quantiles["percentile"] = pd.Categorical(
-    table2_quantiles["percentile"],
-    categories=percentile_order,
-    ordered=True
-)
-
-table2_quantiles = (
-    table2_quantiles
-    .sort_values(
-        [
-            "year",
-            "warming",
-            "percentile",
-            "process",
-            "ice_sheet"
-        ]
-    )
-    .reset_index(drop=True)
-)
-
-# ============================================================
-# 10. EXPORT PUBLICATION-STYLE PROCESS TABLE
-# ============================================================
-
-process_table_file = os.path.join(
-    output_dir,
-    "B25_Table2_process_contributions_publication_format.xlsx"
-)
-
-with pd.ExcelWriter(
-    process_table_file,
-    engine="xlsxwriter"
-) as writer:
-
-    workbook = writer.book
-    worksheet = workbook.add_worksheet("Table 2")
-    writer.sheets["Table 2"] = worksheet
-
-    # --------------------------------------------------------
-    # FORMATS
-    # --------------------------------------------------------
-
-    title_format = workbook.add_format({
-        "bold": True,
-        "font_size": 12,
-        "align": "left",
-        "valign": "vcenter"
-    })
-
-    note_format = workbook.add_format({
-        "italic": True,
-        "font_size": 10,
-        "align": "left",
-        "valign": "vcenter"
-    })
-
-    process_header_format = workbook.add_format({
-        "bold": True,
-        "align": "center",
-        "valign": "vcenter",
-        "top": 1,
-        "bottom": 1
-    })
-
-    ice_header_format = workbook.add_format({
-        "bold": True,
-        "align": "center",
-        "valign": "vcenter",
-        "bottom": 1
-    })
-
-    left_header_format = workbook.add_format({
-        "bold": True,
-        "align": "center",
-        "valign": "vcenter",
-        "top": 1,
-        "bottom": 1
-    })
-
-    year_warming_format = workbook.add_format({
-        "align": "left",
-        "valign": "top"
-    })
-
-    percentile_format = workbook.add_format({
-        "align": "center",
-        "valign": "vcenter"
-    })
-
-    value_format = workbook.add_format({
-        "align": "center",
-        "valign": "vcenter"
-    })
-
-    group_bottom_format = workbook.add_format({
-        "align": "center",
-        "valign": "vcenter",
-        "bottom": 1
-    })
-
-    left_group_bottom_format = workbook.add_format({
-        "align": "left",
-        "valign": "vcenter",
-        "bottom": 1
-    })
-
-    # --------------------------------------------------------
-    # TABLE DIMENSIONS
-    # --------------------------------------------------------
-
-    first_data_col = 2
-    columns_per_process = len(ice_sheet_order_process)
-
-    final_col = (
-        first_data_col
-        + len(process_order) * columns_per_process
+    final_column = (
+        first_data_column
+        + len(process_order)
+        * columns_per_process
         - 1
     )
 
-    # --------------------------------------------------------
-    # TITLE AND NOTE
-    # --------------------------------------------------------
+    with pd.ExcelWriter(
+        output_file,
+        engine="xlsxwriter"
+    ) as writer:
 
-    worksheet.merge_range(
-        0,
-        0,
-        0,
-        final_col,
-        "Table 2. Projected sea-level rise contributions "
-        "from each ice sheet and process",
-        title_format
-    )
+        workbook = writer.book
 
-    worksheet.merge_range(
-        1,
-        0,
-        1,
-        final_col,
-        "Values are the 5th, 50th, and 95th percentiles "
-        "of the Monte Carlo distributions.",
-        note_format
-    )
+        worksheet = workbook.add_worksheet(
+            "Table 2"
+        )
 
-    # --------------------------------------------------------
-    # LEFT-SIDE HEADERS
-    # --------------------------------------------------------
+        writer.sheets["Table 2"] = worksheet
 
-    worksheet.merge_range(
-        3,
-        0,
-        4,
-        0,
-        "Year and warming",
-        left_header_format
-    )
+        title_format = workbook.add_format({
+            "bold": True,
+            "font_size": 12,
+            "align": "left",
+            "valign": "vcenter"
+        })
 
-    worksheet.merge_range(
-        3,
-        1,
-        4,
-        1,
-        "Percentile",
-        left_header_format
-    )
+        note_format = workbook.add_format({
+            "italic": True,
+            "font_size": 10,
+            "align": "left",
+            "valign": "vcenter"
+        })
 
-    # --------------------------------------------------------
-    # PROCESS AND ICE-SHEET HEADERS
-    # --------------------------------------------------------
+        group_header_format = workbook.add_format({
+            "bold": True,
+            "align": "center",
+            "valign": "vcenter",
+            "top": 1,
+            "bottom": 1
+        })
 
-    start_col = first_data_col
+        subheader_format = workbook.add_format({
+            "bold": True,
+            "align": "center",
+            "valign": "vcenter",
+            "bottom": 1
+        })
 
-    for process in process_order:
+        year_warming_format = workbook.add_format({
+            "align": "left",
+            "valign": "vcenter"
+        })
 
-        end_col = start_col + columns_per_process - 1
+        percentile_format = workbook.add_format({
+            "align": "center",
+            "valign": "vcenter"
+        })
+
+        value_format = workbook.add_format({
+            "align": "center",
+            "valign": "vcenter"
+        })
+
+        group_bottom_format = workbook.add_format({
+            "align": "center",
+            "valign": "vcenter",
+            "bottom": 1
+        })
+
+        worksheet.merge_range(
+            0,
+            0,
+            0,
+            final_column,
+            "Table 2. Projected sea-level rise "
+            "contributions from each ice sheet "
+            "and process",
+            title_format
+        )
+
+        worksheet.merge_range(
+            1,
+            0,
+            1,
+            final_column,
+            "Values are the 5th, 50th, and 95th "
+            "percentiles of the Monte Carlo distributions.",
+            note_format
+        )
 
         worksheet.merge_range(
             3,
-            start_col,
-            3,
-            end_col,
-            process,
-            process_header_format
+            0,
+            4,
+            0,
+            "Year and warming",
+            group_header_format
         )
 
-        for offset, ice_sheet in enumerate(
-            ice_sheet_order_process
-        ):
-            worksheet.write(
-                4,
-                start_col + offset,
-                ice_sheet,
-                ice_header_format
-            )
-
-        start_col = end_col + 1
-
-    # --------------------------------------------------------
-    # DATA ROWS
-    # --------------------------------------------------------
-
-    output_row = 5
-
-    year_warming_groups = (
-        table2_quantiles[
-            ["year", "warming"]
-        ]
-        .drop_duplicates()
-        .sort_values(["year", "warming"])
-    )
-
-    for _, group_info in year_warming_groups.iterrows():
-
-        year = int(group_info["year"])
-        warming = float(group_info["warming"])
-
-        group = table2_quantiles.loc[
-            (table2_quantiles["year"] == year)
-            & (table2_quantiles["warming"] == warming)
-        ].copy()
-
-        first_group_row = output_row
-        last_group_row = output_row + len(percentile_order) - 1
-
-        # Merge the year/warming label across the percentile rows
         worksheet.merge_range(
-            first_group_row,
-            0,
-            last_group_row,
-            0,
-            f"{year}\n{warming:.1f}°C",
-            year_warming_format
+            3,
+            1,
+            4,
+            1,
+            "Percentile",
+            group_header_format
         )
 
-        for percentile_index, percentile in enumerate(
-            percentile_order
-        ):
+        start_column = first_data_column
 
-            current_row = output_row + percentile_index
+        for process in process_order:
 
-            is_last_percentile = (
-                percentile_index
-                == len(percentile_order) - 1
+            end_column = (
+                start_column
+                + columns_per_process
+                - 1
             )
 
-            current_percentile_format = (
-                group_bottom_format
-                if is_last_percentile
-                else percentile_format
+            process_label = (
+                "Runoff − Accumulation"
+                if process == "Runoff minus accumulation"
+                else process
             )
 
-            worksheet.write(
-                current_row,
-                1,
-                percentile,
-                current_percentile_format
+            worksheet.merge_range(
+                3,
+                start_column,
+                3,
+                end_column,
+                process_label,
+                group_header_format
             )
 
-            percentile_data = group.loc[
-                group["percentile"] == percentile
-            ]
+            for offset, ice_sheet in enumerate(
+                process_ice_sheet_order
+            ):
+                worksheet.write(
+                    4,
+                    start_column + offset,
+                    ice_sheet,
+                    subheader_format
+                )
 
-            output_col = first_data_col
+            start_column = end_column + 1
 
-            for process in process_order:
-                for ice_sheet in ice_sheet_order_process:
+        output_row = 5
 
-                    match = percentile_data.loc[
-                        (
-                            percentile_data["process"]
-                            == process
-                        )
-                        & (
-                            percentile_data["ice_sheet"]
-                            == ice_sheet
-                        ),
-                        "value"
-                    ]
+        years = table_data.index.get_level_values(
+            "year"
+        ).unique()
 
-                    if len(match) == 0:
-                        value = ""
-                    else:
-                        value = format_table_number(
-                            match.iloc[0]
-                        )
+        for year in years:
 
-                    current_value_format = (
+            for warming in warming_order:
+
+                group_index = (
+                    year,
+                    warming
+                )
+
+                available_groups = (
+                    table_data.index
+                    .droplevel("percentile")
+                )
+
+                if group_index not in available_groups:
+                    continue
+
+                first_group_row = output_row
+
+                last_group_row = (
+                    output_row
+                    + len(percentile_order)
+                    - 1
+                )
+
+                worksheet.merge_range(
+                    first_group_row,
+                    0,
+                    last_group_row,
+                    0,
+                    f"{int(year)}\n{warming:.1f}°C",
+                    year_warming_format
+                )
+
+                for percentile_index, percentile in enumerate(
+                    percentile_order
+                ):
+
+                    current_row = (
+                        output_row
+                        + percentile_index
+                    )
+
+                    is_last_row = (
+                        percentile_index
+                        == len(percentile_order) - 1
+                    )
+
+                    row_format = (
                         group_bottom_format
-                        if is_last_percentile
-                        else value_format
+                        if is_last_row
+                        else percentile_format
                     )
 
                     worksheet.write(
                         current_row,
-                        output_col,
-                        value,
-                        current_value_format
+                        1,
+                        percentile,
+                        row_format
                     )
 
-                    output_col += 1
+                    output_column = first_data_column
 
-        output_row += len(percentile_order)
+                    for process in process_order:
+                        for ice_sheet in process_ice_sheet_order:
 
-    # --------------------------------------------------------
-    # LAYOUT
-    # --------------------------------------------------------
+                            value = table_data.loc[
+                                (
+                                    year,
+                                    warming,
+                                    percentile
+                                ),
+                                (
+                                    process,
+                                    ice_sheet
+                                )
+                            ]
 
-    worksheet.set_column(0, 0, 17)
-    worksheet.set_column(1, 1, 11)
-    worksheet.set_column(
-        first_data_col,
-        final_col,
-        11
-    )
+                            cell_format = (
+                                group_bottom_format
+                                if is_last_row
+                                else value_format
+                            )
 
-    worksheet.set_row(0, 20)
-    worksheet.set_row(1, 18)
-    worksheet.set_row(3, 20)
-    worksheet.set_row(4, 18)
+                            worksheet.write(
+                                current_row,
+                                output_column,
+                                fmt(value),
+                                cell_format
+                            )
 
-    worksheet.freeze_panes(5, 2)
-    worksheet.hide_gridlines(2)
+                            output_column += 1
 
-    worksheet.set_landscape()
-    worksheet.fit_to_pages(1, 0)
-    worksheet.set_margins(
-        left=0.25,
-        right=0.25,
-        top=0.4,
-        bottom=0.4
-    )
+                output_row += len(
+                    percentile_order
+                )
 
-print(
-    "Publication-style process table saved to:\n"
-    f"{process_table_file}"
+        worksheet.set_column(0, 0, 17)
+        worksheet.set_column(1, 1, 11)
+        worksheet.set_column(
+            first_data_column,
+            final_column,
+            11
+        )
+
+        worksheet.set_row(0, 20)
+        worksheet.set_row(1, 18)
+        worksheet.set_row(3, 20)
+        worksheet.set_row(4, 18)
+
+        worksheet.freeze_panes(5, 2)
+        worksheet.hide_gridlines(2)
+
+        worksheet.set_landscape()
+        worksheet.fit_to_pages(1, 0)
+
+        worksheet.set_margins(
+            left=0.25,
+            right=0.25,
+            top=0.4,
+            bottom=0.4
+        )
+
+
+# ============================================================
+# 14. WRITE OUTPUT FILES
+# ============================================================
+
+summary_file = os.path.join(
+    output_dir,
+    "B25_ice_sheet_summary_tables.xlsx"
 )
+
+publication_table1_file = os.path.join(
+    output_dir,
+    "B25_Table1_publication_format.xlsx"
+)
+
+publication_table2_file = os.path.join(
+    output_dir,
+    "B25_Table2_process_contributions_"
+    "publication_format.xlsx"
+)
+
+
+export_summary_tables(
+    table1,
+    table2,
+    summary_file
+)
+
+export_publication_table1(
+    table1_wide,
+    publication_table1_file
+)
+
+export_publication_table2(
+    table2_wide,
+    publication_table2_file
+)
+
+
+print("\nFiles saved successfully:")
+print(summary_file)
+print(publication_table1_file)
+print(publication_table2_file)
