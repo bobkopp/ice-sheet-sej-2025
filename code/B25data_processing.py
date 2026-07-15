@@ -344,9 +344,11 @@ def add_runoff_minus_accumulation(mc_long):
         .reset_index()
     )
 
+    # Accumulation is already represented as a signed, negative SLR
+    # contribution, so net runoff-minus-accumulation is R + A
     runoff_accumulation["value"] = (
         runoff_accumulation["R"]
-        - runoff_accumulation["A"]
+        + runoff_accumulation["A"]
     )
 
     runoff_accumulation["variable"] = pd.NA
