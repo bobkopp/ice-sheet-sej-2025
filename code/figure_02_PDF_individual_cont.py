@@ -18,7 +18,6 @@ B19, AR6, and ISMIP6 comparisons to be added later once data become available.
 """
 
 import os
-
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.stats import gaussian_kde
@@ -27,7 +26,6 @@ from B25data_processing import (
     load_and_prepare_data,
     project_dir
 )
-
 
 # ============================================================
 # 1. SETTINGS
@@ -61,12 +59,12 @@ ice_sheets = [
 ]
 
 
-# Colorblind-friendly palette that kind of matches B19
+# Colorblind-friendly palette that approximately matches B19
 ice_sheet_colors = {
-    "EAIS": "#0072B2",      # blue
-    "WAIS": "#E69F00",      # orange
-    "Total AIS": "#CC79A7", # reddish purple / pink
-    "GrIS": "#009E73"       # bluish green
+    "EAIS": "#0072B2",
+    "WAIS": "#E69F00",
+    "Total AIS": "#CC79A7",
+    "GrIS": "#009E73"
 }
 
 panel_labels = [
@@ -80,6 +78,7 @@ panel_labels = [
 kde_bandwidth = 1.0
 
 percentile_levels = [5, 17, 50, 83, 95]
+
 
 
 # ============================================================
@@ -145,51 +144,14 @@ def calculate_kde(
     return kde(x_values)
 
 
-def calculate_figure_limits(
-    dataframe,
-    year,
-    warming_values,
-    ice_sheet_names,
-    padding_fraction=0.08
-):
-    """
-    Calculate one shared x-axis range for both panels
-    within a figure.
-    """
-
-    distributions = []
-
-    for warming in warming_values:
-        for ice_sheet in ice_sheet_names:
-
-            samples = get_ice_sheet_samples(
-                dataframe=dataframe,
-                ice_sheet=ice_sheet,
-                year=year,
-                warming=warming
-            )
-
-            distributions.append(samples)
-
-    combined_samples = np.concatenate(distributions)
-
-    x_min = combined_samples.min()
-    x_max = combined_samples.max()
-
-    data_range = x_max - x_min
-
-    if data_range == 0:
-        data_range = 1.0
-
-    padding = padding_fraction * data_range
-
-    return (
-        x_min - padding,
-        x_max + padding
-    )
-
 def fmt(value):
+    """
+    Format percentile values as whole numbers and use
+    a typographic minus sign.
+    """
+
     return f"{value:.0f}".replace("-", "−")
+
 
 def add_percentile_bar(
     ax,
@@ -206,30 +168,6 @@ def add_percentile_bar(
 
     Labels are shifted horizontally when needed to maintain
     a minimum separation based on the panel's x-axis range.
-
-    Parameters
-    ----------
-    ax : matplotlib.axes.Axes
-        Axis on which to draw the percentile bar.
-
-    samples : array-like
-        Monte Carlo samples.
-
-    y_position : float
-        Vertical location of the percentile bar.
-
-    color : str
-        Line and annotation color.
-
-    annotation_offset : float
-        Vertical distance between the bar and its labels.
-
-    x_range : float
-        Total x-axis range for the panel.
-
-    min_spacing_fraction : float
-        Minimum horizontal spacing between adjacent labels,
-        expressed as a fraction of the x-axis range.
     """
 
     q05, q17, q50, q83, q95 = np.percentile(
@@ -312,9 +250,11 @@ def add_percentile_bar(
         # Forward pass
         for i in range(1, len(positions)):
             if positions[i] - positions[i - 1] < minimum_spacing:
-                positions[i] = positions[i - 1] + minimum_spacing
+                positions[i] = (
+                    positions[i - 1] + minimum_spacing
+                )
 
-        # Recenter the adjusted labels around their original mean
+        # Recenter adjusted labels around their original mean
         positions -= positions.mean() - values.mean()
 
         return positions
@@ -349,7 +289,7 @@ def add_percentile_bar(
             va="bottom",
             clip_on=False,
             zorder=20
-            )
+        )
 
     # --------------------------------------------------------
     # LABELS BELOW BAR: 17th, 83rd
@@ -368,14 +308,35 @@ def add_percentile_bar(
             ha="center",
             va="top",
             clip_on=False,
-            zorder = 20
+            zorder=20
         )
+
 
 # ============================================================
 # 4. CREATE ONE FIGURE FOR EACH YEAR
 # ============================================================
 
 for year in years:
+
+    # --------------------------------------------------------
+    # YEAR-SPECIFIC X-AXIS LIMITS
+    # --------------------------------------------------------
+    
+    if year == 2100:
+        x_min, x_max = -100, 175
+    elif year == 2200:
+        x_min, x_max = -200, 625
+    elif year == 2300:
+        x_min, x_max = -250, 1000
+    
+    x_range = x_max - x_min
+    
+    x_values = np.linspace(
+        x_min,
+        x_max,
+        1200
+    )
+
 
     figure_png = os.path.join(
         output_dir,
@@ -387,27 +348,11 @@ for year in years:
         f"Figure02_individual_ice_sheet_PDFs_{year}.pdf"
     )
 
-    # Use the same x-axis range for the low- and high-warming
-    # panels within each year.
-    x_min, x_max = calculate_figure_limits(
-        dataframe=mc_total_ext,
-        year=year,
-        warming_values=warming_scenarios.values(),
-        ice_sheet_names=ice_sheets
-    )
-
-    x_range = x_max - x_min
-
-    x_values = np.linspace(
-        x_min,
-        x_max,
-        1200
-    )
-
+    # Vertically stacked low- and high-warming panels
     fig, axes = plt.subplots(
-        nrows=1,
-        ncols=2,
-        figsize=(11.5, 5.3),
+        nrows=2,
+        ncols=1,
+        figsize=(7.0, 9.0),
         sharex=True
     )
 
@@ -462,8 +407,8 @@ for year in years:
         # PERCENTILE BARS
         # ----------------------------------------------------
 
-        # Highest bar corresponds to the first ice sheet in
-        # ice_sheets; bars descend evenly toward the curves.
+        # Highest bar corresponds to the first ice sheet;
+        # bars descend evenly toward the KDE curves.
         bar_positions = np.linspace(
             max_density * 1.70,
             max_density * 1.12,
@@ -490,17 +435,14 @@ for year in years:
                 min_spacing_fraction=0.045
             )
 
-            # Use the 5th percentile to position the ice-sheet
-            # label immediately to the left of its bar.
+            # Position the ice-sheet label immediately to the
+            # left of the 5th-percentile endpoint.
             q05 = np.percentile(
                 samples,
                 5
             )
 
-            label_x = max(
-                q05 - 0.025 * x_range,
-                x_min + 0.01 * x_range
-            )
+            label_x = x_min + 0.02 * x_range
 
             ax.text(
                 label_x,
@@ -509,9 +451,10 @@ for year in years:
                 color=ice_sheet_colors[ice_sheet],
                 fontsize=8.5,
                 fontweight="bold",
-                ha="right",
+                ha="left",
                 va="center",
-                clip_on=False
+                clip_on=True,
+                zorder=20
             )
 
         # ----------------------------------------------------
@@ -528,12 +471,6 @@ for year in years:
         ax.set_ylim(
             0,
             max_density * 1.9
-            )
-
-        ax.set_xlabel(
-            "Ice-sheet contribution to SLR (cm)",
-            fontsize=11,
-            fontweight="bold"
         )
 
         ax.set_ylabel(
@@ -545,10 +482,11 @@ for year in years:
         # Panel label
         ax.text(
             0.01,
-            0.98,
+            1.0,
             panel_label,
             transform=ax.transAxes,
             fontsize=14,
+            fontweight="bold",
             ha="left",
             va="top"
         )
@@ -575,15 +513,21 @@ for year in years:
             length=4
         )
 
-    # Only show the y-axis title on the left panel
-    axes[1].set_ylabel("")
+    # Only show the shared x-axis title below the bottom panel
+    axes[0].set_xlabel("")
+
+    axes[1].set_xlabel(
+        "Ice-sheet contribution to SLR (cm)",
+        fontsize=11,
+        fontweight="bold"
+    )
 
     # Year as a figure-level title
     fig.suptitle(
         str(year),
         fontsize=14,
         fontweight="bold",
-        y=0.98
+        y=0.985
     )
 
     # --------------------------------------------------------
@@ -596,7 +540,7 @@ for year in years:
         handles,
         labels,
         loc="lower center",
-        bbox_to_anchor=(0.5, -0.01),
+        bbox_to_anchor=(0.5, 0.015),
         ncol=4,
         frameon=False,
         fontsize=10,
@@ -604,11 +548,11 @@ for year in years:
     )
 
     fig.subplots_adjust(
-        left=0.085,
-        right=0.985,
-        bottom=0.18,
-        top=0.88,
-        wspace=0.22
+        left=0.13,
+        right=0.98,
+        bottom=0.12,
+        top=0.94,
+        hspace=0.26
     )
 
     # --------------------------------------------------------
