@@ -1,0 +1,24 @@
+FaIR-SEJ out-of-core temporal interpolation
+================================================
+Input: /Users/elizabeth/Documents/GitHub/ice-sheet-sej-2025/output/fair_sej_interpolation/fair_sej_interpolated_responses.csv
+NetCDF: /Users/elizabeth/Documents/GitHub/ice-sheet-sej-2025/output/fair_sej_interpolation/timeseries/fair_sej_timeseries.nc
+
+Samples: 50,000
+Years: 296 (2005-2300)
+Responses: 17
+
+CSV chunk size: 200,000
+NetCDF sample write chunk: 1,000
+
+Reference: 2005 = 0 mm relative to the AR6 1995-2014 baseline.
+Method: piecewise-linear interpolation through 2005, 2100, 2200,
+and 2300. Monotonicity is not imposed.
+
+Original responses: E, EA, ED, ER, G, GA, GD, GR, SLR, W, WA, WD, WR
+Derived responses: AIS, ER-A, WR-A, GR-A
+
+Total AIS = EAIS + WAIS.
+Runoff minus accumulation = runoff + signed accumulation.
+
+Intermediate years were not independently elicited and are not
+process-based transient ice-sheet simulations.

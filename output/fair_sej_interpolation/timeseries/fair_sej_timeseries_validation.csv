@@ -1,0 +1,5 @@
+check,passed,maximum_absolute_error
+all_anchor_records_present,True,0.0
+reference_year_equals_zero,True,0.0
+projection_anchors_reproduced,True,0.0
+monotonicity_not_enforced,True,
