@@ -25,8 +25,12 @@ from B25data_processing import (
 
 data = load_and_prepare_data()
 
-mc_total_ext = data["mc_total_ext"]
-process_ext = data["process_ext"]
+mc_total_ext = data["mc_total_ext"].copy()
+process_ext = data["process_ext"].copy()
+
+# Convert sea-level contributions from mm to cm.
+mc_total_ext["value"] = mc_total_ext["value"] / 10.0
+process_ext["value"] = process_ext["value"] / 10.0
 
 # ============================================================
 # 2. TABLE SETTINGS
@@ -285,80 +289,119 @@ quantile_labels = {
 }
 
 
-table2_quantiles = (
+# table2_quantiles = (
+#     process_ext
+#     .groupby(
+#         [
+#             "year",
+#             "warming",
+#             "process",
+#             "ice_sheet"
+#         ],
+#         observed=True
+#     )["value"]
+#     .quantile(
+#         list(quantile_labels)
+#     )
+#     .rename_axis(
+#         index=[
+#             "year",
+#             "warming",
+#             "process",
+#             "ice_sheet",
+#             "quantile"
+#         ]
+#     )
+#     .reset_index(name="value")
+# )
+
+# table2_quantiles["percentile"] = (
+#     table2_quantiles["quantile"]
+#     .map(quantile_labels)
+# )
+
+table2_summary = (
     process_ext
     .groupby(
         [
             "year",
             "warming",
             "process",
-            "ice_sheet"
-        ],
-        observed=True
-    )["value"]
-    .quantile(
-        list(quantile_labels)
-    )
-    .rename_axis(
-        index=[
-            "year",
-            "warming",
-            "process",
             "ice_sheet",
-            "quantile"
-        ]
+        ],
+        observed=True,
+    )["value"]
+    .agg(
+        p05=lambda x: x.quantile(0.05),
+        p50=lambda x: x.quantile(0.50),
+        p95=lambda x: x.quantile(0.95),
     )
-    .reset_index(name="value")
+    .reset_index()
 )
 
-table2_quantiles["percentile"] = (
-    table2_quantiles["quantile"]
-    .map(quantile_labels)
+table2_summary["value"] = (
+    table2_summary["p50"].map(fmt)
+    + " ("
+    + table2_summary["p05"].map(fmt)
+    + "–"
+    + table2_summary["p95"].map(fmt)
+    + ")"
 )
 
 
 table2_wide = (
-    table2_quantiles
+    #table2_quantiles
+    table2_summary
     .pivot(
         index=[
             "year",
             "warming",
-            "percentile"
         ],
         columns=[
             "process",
-            "ice_sheet"
+            "ice_sheet",
         ],
-        values="value"
+        values="value",
     )
     .reindex(
         columns=pd.MultiIndex.from_product(
             [
                 process_order,
-                process_ice_sheet_order
+                process_ice_sheet_order,
             ],
             names=[
                 "Process",
-                "Ice sheet"
-            ]
+                "Ice sheet",
+            ],
         )
     )
 )
 
 
+# table2_row_order = pd.MultiIndex.from_product(
+#     [
+#         sorted(
+#             table2_quantiles["year"].unique()
+#         ),
+#         warming_order,
+#         percentile_order
+#     ],
+#     names=[
+#         "year",
+#         "warming",
+#         "percentile"
+#     ]
+# )
+
 table2_row_order = pd.MultiIndex.from_product(
     [
-        sorted(
-            table2_quantiles["year"].unique()
-        ),
+        sorted(table2_summary["year"].unique()),
         warming_order,
-        percentile_order
     ],
     names=[
         "year",
         "warming",
-        "percentile"
-    ]
+    ],
 )
 
 table2_wide = table2_wide.reindex(
@@ -686,7 +729,7 @@ def export_publication_table2(
     Export publication-style process contribution table.
     """
 
-    first_data_column = 2
+    first_data_column = 1
 
     columns_per_process = len(
         process_ice_sheet_order
@@ -843,129 +886,45 @@ def export_publication_table2(
         years = table_data.index.get_level_values(
             "year"
         ).unique()
-
+        
         for year in years:
 
             for warming in warming_order:
-
-                group_index = (
-                    year,
-                    warming
-                )
-
-                available_groups = (
-                    table_data.index
-                    .droplevel("percentile")
-                )
-
-                if group_index not in available_groups:
+        
+                if (year, warming) not in table_data.index:
                     continue
-
-                first_group_row = output_row
-
-                last_group_row = (
-                    output_row
-                    + len(percentile_order)
-                    - 1
-                )
-
-                worksheet.merge_range(
-                    first_group_row,
-                    0,
-                    last_group_row,
+        
+                worksheet.write(
+                    output_row,
                     0,
                     f"{int(year)}\n{warming:.1f}°C",
-                    year_warming_format
+                    year_warming_format,
                 )
+        
+                output_column = first_data_column
+        
+                for process in process_order:
+                    for ice_sheet in process_ice_sheet_order:
+        
+                        value = table_data.loc[
+                            (year, warming),
+                            (process, ice_sheet),
+                        ]
+        
+                        worksheet.write(
+                            output_row,
+                            output_column,
+                            value,
+                            value_format,
+                        )
+        
+                        output_column += 1
+        
+                output_row += 1
 
-                for percentile_index, percentile in enumerate(
-                    percentile_order
-                ):
+        
 
-                    current_row = (
-                        output_row
-                        + percentile_index
-                    )
-
-                    is_last_row = (
-                        percentile_index
-                        == len(percentile_order) - 1
-                    )
-
-                    row_format = (
-                        group_bottom_format
-                        if is_last_row
-                        else percentile_format
-                    )
-
-                    worksheet.write(
-                        current_row,
-                        1,
-                        percentile,
-                        row_format
-                    )
-
-                    output_column = first_data_column
-
-                    for process in process_order:
-                        for ice_sheet in process_ice_sheet_order:
-
-                            value = table_data.loc[
-                                (
-                                    year,
-                                    warming,
-                                    percentile
-                                ),
-                                (
-                                    process,
-                                    ice_sheet
-                                )
-                            ]
-
-                            cell_format = (
-                                group_bottom_format
-                                if is_last_row
-                                else value_format
-                            )
-
-                            worksheet.write(
-                                current_row,
-                                output_column,
-                                fmt(value),
-                                cell_format
-                            )
-
-                            output_column += 1
-
-                output_row += len(
-                    percentile_order
-                )
-
-        worksheet.set_column(0, 0, 17)
-        worksheet.set_column(1, 1, 11)
-        worksheet.set_column(
-            first_data_column,
-            final_column,
-            11
-        )
-
-        worksheet.set_row(0, 20)
-        worksheet.set_row(1, 18)
-        worksheet.set_row(3, 20)
-        worksheet.set_row(4, 18)
-
-        worksheet.freeze_panes(5, 2)
-        worksheet.hide_gridlines(2)
-
-        worksheet.set_landscape()
-        worksheet.fit_to_pages(1, 0)
-
-        worksheet.set_margins(
-            left=0.25,
-            right=0.25,
-            top=0.4,
-            bottom=0.4
-        )
+       
 
 
 # ============================================================
@@ -985,7 +944,7 @@ publication_table1_file = os.path.join(
 publication_table2_file = os.path.join(
     output_dir,
     "B25_Table2_process_contributions_"
-    "publication_format.xlsx"
+    "publication_format_v2.xlsx"
 )
 
 

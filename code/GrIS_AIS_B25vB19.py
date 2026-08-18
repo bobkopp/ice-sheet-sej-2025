@@ -68,10 +68,6 @@ figure_png = os.path.join(
     "Figure02_B19_B25_GrIS_AIS_PDFs_2100.png"
 )
 
-figure_pdf = os.path.join(
-    output_dir,
-    "Figure02_B19_B25_GrIS_AIS_PDFs_2100.pdf"
-)
 
 
 year = 2100
@@ -567,6 +563,7 @@ fig, axes = plt.subplots(
     sharex=True
 )
 
+axes[0].tick_params(labelbottom=True)
 
 for ax, (
     scenario_name,
@@ -811,13 +808,27 @@ for ax, (
         va="top"
     )
 
-    # Warming-scenario label.
+    # Year
     ax.text(
         0.98,
-        0.98,
-        scenario_name,
+        0.985,
+        "2100",
         transform=ax.transAxes,
-        fontsize=11,
+        fontsize=12,
+        fontweight="bold",
+        ha="right",
+        va="top"
+    )
+    
+    # Warming scenario
+    warming_label = f"{warming:g}°C"
+
+    ax.text(
+        0.98,
+        0.93,
+        warming_label,
+        transform=ax.transAxes,
+        fontsize=12,
         fontweight="bold",
         ha="right",
         va="top"
@@ -841,6 +852,28 @@ for ax, (
         labelsize=10,
         length=4
     )
+    
+    ax.tick_params(labelsize=12)
+    
+    ax.grid(
+        axis="x",
+        color="0.93",
+        linewidth=0.5,
+        linestyle="-",
+        zorder=0
+    )
+
+    ax.set_ylabel(
+        "Probability density, p[SLR]",
+        fontsize=12,
+        fontweight="bold"
+    )
+    
+    axes[1].set_xlabel(
+        "Ice-sheet contribution to SLR (cm)",
+        fontsize=12,
+        fontweight="bold"
+    )
 
 
 # ============================================================
@@ -859,107 +892,6 @@ axes[1].set_xlabel(
 
 
 # ============================================================
-# 6. FIGURE TITLE
-# ============================================================
-
-fig.suptitle(
-    "2100",
-    fontsize=14,
-    fontweight="bold",
-    y=0.985
-)
-
-
-# ============================================================
-# 7. LEGENDS
-# ============================================================
-
-ice_sheet_handles = [
-
-    Line2D(
-        [0],
-        [0],
-        color=ice_sheet_colors[
-            "GrIS"
-        ],
-        linewidth=1.8,
-        label="GrIS"
-    ),
-
-    Line2D(
-        [0],
-        [0],
-        color=ice_sheet_colors[
-            "AIS"
-        ],
-        linewidth=1.8,
-        label="AIS"
-    )
-]
-
-
-study_handles = [
-
-    Line2D(
-        [0],
-        [0],
-        color="0.25",
-        linestyle="--",
-        linewidth=2.0,
-        marker="o",
-        markerfacecolor="white",
-        markeredgecolor="0.25",
-        markersize=4.5,
-        label="B19"
-    ),
-
-    Line2D(
-        [0],
-        [0],
-        color="0.25",
-        linestyle="-",
-        linewidth=3.0,
-        marker="o",
-        markerfacecolor="0.25",
-        markeredgecolor="0.25",
-        markersize=4.5,
-        label="B25"
-    )
-]
-
-
-ice_sheet_legend = fig.legend(
-    handles=ice_sheet_handles,
-    title="Ice sheet",
-    loc="lower center",
-    bbox_to_anchor=(0.36, 0.012),
-    ncol=2,
-    frameon=False,
-    fontsize=10,
-    title_fontsize=10,
-    handlelength=2.5
-)
-
-
-fig.add_artist(
-    ice_sheet_legend
-)
-
-
-fig.legend(
-    handles=study_handles,
-    title="Study",
-    loc="lower center",
-    bbox_to_anchor=(0.68, 0.012),
-    ncol=2,
-    frameon=False,
-    fontsize=10,
-    title_fontsize=10,
-    handlelength=2.5
-)
-
-
-# ============================================================
 # 8. LAYOUT AND SAVE
 # ============================================================
 
@@ -967,19 +899,14 @@ fig.subplots_adjust(
     left=0.13,
     right=0.98,
     bottom=0.13,
-    top=0.94,
-    hspace=0.26
+    top=0.96,
+    hspace=0.16
 )
 
 
 fig.savefig(
     figure_png,
     dpi=300,
-    bbox_inches="tight"
-)
-
-fig.savefig(
-    figure_pdf,
     bbox_inches="tight"
 )
 
@@ -996,8 +923,4 @@ print(
 
 print(
     figure_png
-)
-
-print(
-    figure_pdf
 )

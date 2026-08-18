@@ -1,26 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Fri Jul 17 12:33:36 2026
+Created on Fri Jul 17 12:23:06 2026
 
-Ice-sheet contributions to sea-level rise by projection year
-and warming level.
+Figure: Ice-sheet contribution to sea-level rise as a function
+of warming level.
 
 Creates a 2 x 2 figure with panels for:
     A. GrIS
     B. EAIS
     C. WAIS
-    D. Total ice sheets
+    D. Total ice-sheet SLR
 
-The x-axis shows projection year:
+Within each warming-level cluster, probability bars represent:
     2100
     2200
     2300
-
-Within each year, clustered probability bars represent:
-    2.0°C warming
-    3.5°C warming
-    5.0°C warming
 
 Each probability bar shows:
     Thin vertical line: 5th–95th percentile range
@@ -31,13 +26,9 @@ Each probability bar shows:
 """
 
 import os
-
 import matplotlib.pyplot as plt
 import numpy as np
-
-from matplotlib.lines import Line2D
 from matplotlib.ticker import AutoMinorLocator
-
 from B25data_processing import (
     load_and_prepare_data,
     project_dir
@@ -54,20 +45,16 @@ output_dir = os.path.join(
     "figures"
 )
 
-os.makedirs(
-    output_dir,
-    exist_ok=True
-)
-
+os.makedirs(output_dir, exist_ok=True)
 
 figure_png = os.path.join(
     output_dir,
-    "Figure05_clustered_SLR_by_year.png"
+    "Figure05_clustered_SLR_by_warming.png"
 )
 
 figure_pdf = os.path.join(
     output_dir,
-    "Figure05_clustered_SLR_by_year.pdf"
+    "Figure05_clustered_SLR_by_warming.pdf"
 )
 
 
@@ -77,13 +64,11 @@ years = [
     2300
 ]
 
-
 warming_levels = [
     2.0,
     3.5,
     5.0
 ]
-
 
 percentile_levels = [
     5,
@@ -94,13 +79,7 @@ percentile_levels = [
 ]
 
 
-# Display name mapped to the exact name used in mc_total_ext.
-#
-# "Total ice-sheet SLR" includes:
-#     EAIS + WAIS + GrIS
-#
-# It is therefore different from "Total AIS," which only
-# includes the Antarctic contribution.
+# Display name mapped to the name used in mc_total_ext
 panel_ice_sheets = {
     "GrIS": "GrIS",
     "EAIS": "EAIS",
@@ -117,39 +96,23 @@ panel_labels = {
 }
 
 
-warming_labels = {
-    2.0: "2.0°C",
-    3.5: "3.5°C",
-    5.0: "5.0°C"
+# Distinguish years by color
+year_colors = {
+    2100: "#0072B2",
+    2200: "#CC79A7",
+    2300: "#D55E00"
 }
 
 
-# Colorblind-friendly colors for warming levels.
-warming_colors = {
-    2.0: "#0072B2",
-    3.5: "#6A3D9A",
-    5.0: "#D55E00"
+# Horizontal offsets around each warming level
+year_offsets = {
+    2100: -0.18,
+    2200: 0.00,
+    2300: 0.18
 }
 
 
-# Use evenly spaced categorical positions rather than the
-# numerical year values themselves.
-year_positions = {
-    2100: 1.0,
-    2200: 2.0,
-    2300: 3.0
-}
-
-
-# Horizontal offset of each warming level within a year cluster.
-warming_offsets = {
-    2.0: -0.20,
-    3.5: 0.00,
-    5.0: 0.20
-}
-
-
-# Half-width of the horizontal percentile ticks.
+# Width of percentile ticks, measured in warming-level units
 tick_half_width = 0.045
 
 
@@ -173,9 +136,8 @@ def get_ice_sheet_samples(
     warming
 ):
     """
-    Extract Monte Carlo samples for one ice-sheet component.
-
-    Values are converted from millimeters to centimeters.
+    Extract samples for one ice-sheet component and convert
+    millimeters to centimeters.
     """
 
     samples = dataframe.loc[
@@ -216,7 +178,7 @@ def add_vertical_probability_bar(
         17th–83rd percentile range
 
     Circle:
-        50th percentile
+        median
     """
 
     q05, q17, q50, q83, q95 = np.percentile(
@@ -260,7 +222,6 @@ def add_vertical_probability_bar(
         marker="o",
         markersize=6,
         color=color,
-        markeredgecolor=color,
         zorder=5
     )
 
@@ -291,33 +252,29 @@ def calculate_panel_y_limits(
     padding_fraction=0.10
 ):
     """
-    Calculate panel y-axis limits from the displayed
-    5th–95th percentile ranges.
+    Calculate y-axis limits from the displayed 5th–95th
+    percentile ranges.
     """
 
+    if isinstance(distributions, dict):
+        distribution_values = distributions.values()
+    else:
+        distribution_values = distributions
+
     percentile_ranges = np.array([
-        np.percentile(
-            samples,
-            [5, 95]
-        )
-        for samples in distributions.values()
+        np.percentile(samples, [5, 95])
+        for samples in distribution_values
     ])
 
     y_min_data = percentile_ranges[:, 0].min()
     y_max_data = percentile_ranges[:, 1].max()
 
-    display_range = (
-        y_max_data
-        - y_min_data
-    )
+    display_range = y_max_data - y_min_data
 
     if display_range == 0:
         display_range = 1.0
 
-    padding = (
-        padding_fraction
-        * display_range
-    )
+    padding = padding_fraction * display_range
 
     return (
         y_min_data - padding,
@@ -326,7 +283,7 @@ def calculate_panel_y_limits(
 
 
 # ============================================================
-# 4. PREPARE ALL DISTRIBUTIONS
+# 4. PREPARE DISTRIBUTIONS
 # ============================================================
 
 all_distributions = {}
@@ -350,7 +307,28 @@ for panel_name, data_name in panel_ice_sheets.items():
 
 
 # ============================================================
-# 5. CREATE FIGURE
+# 5. SHARED Y-AXIS LIMITS FOR INDIVIDUAL ICE SHEETS
+# ============================================================
+
+shared_distributions = []
+
+for panel_name in [
+    "GrIS",
+    "EAIS",
+    "WAIS"
+]:
+    shared_distributions.extend(
+        all_distributions[panel_name].values()
+    )
+
+shared_y_min, shared_y_max = calculate_panel_y_limits(
+    distributions=shared_distributions,
+    padding_fraction=0.10
+)
+
+
+# ============================================================
+# 6. CREATE FIGURE
 # ============================================================
 
 fig, axes = plt.subplots(
@@ -362,27 +340,31 @@ fig, axes = plt.subplots(
 
 axes = axes.flatten()
 
+# Show x-axis tick labels on the upper row.
+axes[0].tick_params(labelbottom=True)
+axes[1].tick_params(labelbottom=True)
 
-for ax, panel_name in zip(
-    axes,
-    panel_ice_sheets.keys()
+
+for i, (ax, panel_name) in enumerate(
+    zip(
+        axes,
+        panel_ice_sheets.keys()
+    )
 ):
 
-    distributions = all_distributions[
-        panel_name
-    ]
+    distributions = all_distributions[panel_name]
 
     # --------------------------------------------------------
     # DRAW CLUSTERED PROBABILITY BARS
     # --------------------------------------------------------
 
-    for year in years:
+    for warming in warming_levels:
 
-        for warming in warming_levels:
+        for year in years:
 
             x_position = (
-                year_positions[year]
-                + warming_offsets[warming]
+                warming
+                + year_offsets[year]
             )
 
             samples = distributions[
@@ -393,65 +375,65 @@ for ax, panel_name in zip(
                 ax=ax,
                 samples=samples,
                 x_position=x_position,
-                color=warming_colors[warming]
+                color=year_colors[year]
             )
 
     # --------------------------------------------------------
-    # Y-AXIS LIMITS
+    # PANEL-SPECIFIC Y LIMITS
     # --------------------------------------------------------
 
-    y_min, y_max = calculate_panel_y_limits(
-        distributions=distributions,
-        padding_fraction=0.10
-    )
+    if panel_name in [
+        "GrIS",
+        "EAIS",
+        "WAIS"
+    ]:
+        ax.set_ylim(
+            shared_y_min,
+            shared_y_max
+        )
+    else:
+        y_min, y_max = calculate_panel_y_limits(
+            distributions=distributions,
+            padding_fraction=0.10
+        )
 
-    ax.set_ylim(
-        y_min,
-        y_max
-    )
-
-    # Add one minor interval between each pair of major
-    # y-axis ticks.
-    ax.yaxis.set_minor_locator(
-        AutoMinorLocator(2)
-    )
+        ax.set_ylim(
+            y_min,
+            y_max
+        )
 
     # --------------------------------------------------------
     # X AXIS
     # --------------------------------------------------------
 
     ax.set_xlim(
-        0.55,
-        3.45
+        1.55,
+        5.45
     )
 
-    ax.set_xticks([
-        year_positions[year]
-        for year in years
-    ])
+    ax.set_xticks(
+        warming_levels
+    )
 
     ax.set_xticklabels([
-        str(year)
-        for year in years
+        "2.0°C",
+        "3.5°C",
+        "5.0°C"
     ])
-
-    # Do not add minor x ticks because the bars themselves
-    # occupy the positions between the year centers.
-    ax.tick_params(
-        axis="x",
-        which="minor",
-        bottom=False
-    )
 
     # --------------------------------------------------------
     # Y AXIS
     # --------------------------------------------------------
 
-    ax.set_ylabel(
-        "Contribution to SLR (cm)",
-        fontsize=11,
-        fontweight="bold"
-    )
+    if i in [
+        0,
+        2
+    ]:
+        ax.set_ylabel(
+            "Contribution to SLR (cm)",
+            fontsize=12,
+            fontweight="bold"
+        )
 
     # --------------------------------------------------------
     # PANEL TITLE AND LABEL
@@ -476,72 +458,51 @@ for ax, panel_name in zip(
     )
 
     # --------------------------------------------------------
-    # MAJOR AND MINOR GRID LINES
-    # --------------------------------------------------------
-
-    # Major horizontal and vertical grid lines.
-    ax.grid(
-        axis="both",
-        which="major",
-        linestyle="--",
-        linewidth=0.65,
-        color="0.82",
-        alpha=0.9,
-        zorder=0
-    )
-
-    # Minor horizontal grid lines.
-    ax.grid(
-        axis="y",
-        which="minor",
-        linestyle=":",
-        linewidth=0.50,
-        color="0.91",
-        alpha=0.9,
-        zorder=0
-    )
-
-    # --------------------------------------------------------
-    # GENERAL FORMATTING
+    # FORMATTING
     # --------------------------------------------------------
 
     ax.tick_params(
         axis="both",
-        which="major",
         direction="out",
-        labelsize=10,
+        labelsize=12,
         length=4
     )
 
-    ax.tick_params(
-        axis="y",
+    # Major ticks
+    ax.grid(
+        which="major",
+        color="0.85",
+        linestyle="--",
+        linewidth=0.6,
+        zorder=0
+    )
+    
+    # Minor ticks
+    ax.xaxis.set_minor_locator(AutoMinorLocator(2))
+    ax.yaxis.set_minor_locator(AutoMinorLocator(2))
+    
+    ax.grid(
         which="minor",
-        direction="out",
-        length=2.5
+        color="0.93",
+        linestyle="--",
+        linewidth=0.5,
+        zorder=0
     )
 
-    ax.spines["top"].set_visible(
-        False
-    )
-
-    ax.spines["right"].set_visible(
-        False
-    )
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
 
 
-# ============================================================
-# 6. SHARED X-AXIS LABELS
-# ============================================================
-
+# Shared x-axis labels on bottom row
 axes[2].set_xlabel(
-    "Projection year",
-    fontsize=11,
+    "Warming level",
+    fontsize=12,
     fontweight="bold"
 )
 
 axes[3].set_xlabel(
-    "Projection year",
-    fontsize=11,
+    "Warming level",
+    fontsize=12,
     fontweight="bold"
 )
 
@@ -550,29 +511,32 @@ axes[3].set_xlabel(
 # 7. LEGEND
 # ============================================================
 
-legend_handles = [
-    Line2D(
+legend_handles = []
+
+for year in years:
+
+    handle = plt.Line2D(
         [0],
         [0],
-        color=warming_colors[warming],
+        color=year_colors[year],
         linewidth=4,
         marker="o",
         markersize=6,
-        label=warming_labels[warming]
+        label=str(year)
     )
-    for warming in warming_levels
-]
+
+    legend_handles.append(handle)
 
 
 fig.legend(
     handles=legend_handles,
-    title="Warming level",
+    title="Projection year",
     loc="lower center",
     bbox_to_anchor=(0.5, 0.01),
     ncol=3,
     frameon=False,
-    fontsize=10,
-    title_fontsize=10
+    fontsize=12,
+    title_fontsize=12
 )
 
 
@@ -583,12 +547,11 @@ fig.legend(
 fig.subplots_adjust(
     left=0.09,
     right=0.98,
-    bottom=0.14,
+    bottom=0.13,
     top=0.94,
     wspace=0.22,
     hspace=0.28
 )
-
 
 fig.savefig(
     figure_png,
@@ -601,19 +564,9 @@ fig.savefig(
     bbox_inches="tight"
 )
 
-
 plt.show()
 plt.close(fig)
 
-
-print(
-    "\nSaved clustered year figure:"
-)
-
-print(
-    figure_png
-)
-
-print(
-    figure_pdf
-)
+print("\nSaved clustered warming-level figure:")
+print(figure_png)
+print(figure_pdf)

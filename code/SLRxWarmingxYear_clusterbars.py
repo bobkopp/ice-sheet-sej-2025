@@ -49,13 +49,9 @@ os.makedirs(output_dir, exist_ok=True)
 
 figure_png = os.path.join(
     output_dir,
-    "Figure05_clustered_SLR_by_warming.png"
+    "Figure05_clustered_SLR_by_warming_UPDATED.png"
 )
 
-figure_pdf = os.path.join(
-    output_dir,
-    "Figure05_clustered_SLR_by_warming.pdf"
-)
 
 
 years = [
@@ -513,14 +509,9 @@ fig.savefig(
     bbox_inches="tight"
 )
 
-fig.savefig(
-    figure_pdf,
-    bbox_inches="tight"
-)
 
 plt.show()
 plt.close(fig)
 
 print("\nSaved clustered warming-level figure:")
 print(figure_png)
-print(figure_pdf)

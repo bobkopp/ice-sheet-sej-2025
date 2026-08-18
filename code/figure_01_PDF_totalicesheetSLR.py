@@ -35,13 +35,9 @@ os.makedirs(output_dir, exist_ok=True)
 
 figure_png = os.path.join(
     output_dir,
-    "Figure01_total_ice_sheet_SLR_PDFs.png"
+    "Figure01_total_ice_sheet_SLR_PDFs_UPDATED.png"
 )
 
-figure_pdf = os.path.join(
-    output_dir,
-    "Figure01_total_ice_sheet_SLR_PDFs.pdf"
-)
 
 
 years = [2100, 2300]
@@ -976,7 +972,6 @@ plt.show()
 
 print("\nFigure saved to:")
 print(figure_png)
-print(figure_pdf)
 
 
 

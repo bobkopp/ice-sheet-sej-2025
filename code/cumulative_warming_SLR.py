@@ -31,7 +31,7 @@ from B25data_processing import (
 
 output_dir = os.path.join(
     project_dir,
-    "output",
+    "output/figures",
 )
 
 os.makedirs(
@@ -494,7 +494,7 @@ fig.tight_layout()
 
 total_figure_file = os.path.join(
     output_dir,
-    "total_ice_sheet_slr_vs_cumulative_warming_cm.png",
+    "total_ice_sheet_slr_vs_cumulative_warming_cm_UPDATDE.png",
 )
 
 fig.savefig(

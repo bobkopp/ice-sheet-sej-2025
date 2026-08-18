@@ -31,7 +31,7 @@ project_dir = "/Users/elizabeth/Documents/GitHub/ice-sheet-sej-2025"
 data_file = os.path.join(
     project_dir,
     "data",
-    "sej2025_split_panel_liz.csv"
+    "sej2025_SplitPanels_liz_updated.csv"
 )
 
 output_dir = os.path.join(
@@ -345,7 +345,7 @@ def add_runoff_minus_accumulation(mc_long):
     )
 
     # Accumulation is already represented as a signed, negative SLR
-    # contribution, so net runoff-minus-accumulation is R + A
+    # contribution, so net runoff-minus-accumulation is actually R + A
     runoff_accumulation["value"] = (
         runoff_accumulation["R"]
         + runoff_accumulation["A"]
