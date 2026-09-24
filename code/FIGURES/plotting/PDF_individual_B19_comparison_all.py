@@ -47,7 +47,7 @@ from B25data_processing import (
 # 1. SETTINGS
 # ============================================================
 
-output_dir = str(output_for("04_endpoint_distributions", "b19_comparisons"))
+output_dir = str(output_for("05_endpoint_distributions", "b19_comparisons"))
 
 os.makedirs(
     output_dir,

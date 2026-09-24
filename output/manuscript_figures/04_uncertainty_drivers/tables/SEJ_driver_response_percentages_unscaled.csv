@@ -1,0 +1,379 @@
+warming,ice_sheet,year,process_group,selected_process,process_label,n,n_responses,percent
+2°C,GrIS,2100,DP,1,Buttressing by ice shelves,2.0,11,18.181818181818183
+2°C,GrIS,2100,DP,2,Basal traction,6.0,11,54.54545454545455
+2°C,GrIS,2100,DP,3,Transverse stresses,1.0,11,9.090909090909092
+2°C,GrIS,2100,DP,4,Hydrofracturing,1.0,11,9.090909090909092
+2°C,GrIS,2100,DP,5,Ice cliff instability,1.0,11,9.090909090909092
+2°C,GrIS,2100,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+2°C,GrIS,2200,DP,1,Buttressing by ice shelves,1.0,10,10.0
+2°C,GrIS,2200,DP,2,Basal traction,5.0,10,50.0
+2°C,GrIS,2200,DP,3,Transverse stresses,1.0,10,10.0
+2°C,GrIS,2200,DP,4,Hydrofracturing,1.0,10,10.0
+2°C,GrIS,2200,DP,5,Ice cliff instability,2.0,10,20.0
+2°C,GrIS,2200,DP,6,Dissipation after iceberg formation,0.0,10,0.0
+2°C,GrIS,2300,DP,1,Buttressing by ice shelves,1.0,10,10.0
+2°C,GrIS,2300,DP,2,Basal traction,4.0,10,40.0
+2°C,GrIS,2300,DP,3,Transverse stresses,2.0,10,20.0
+2°C,GrIS,2300,DP,4,Hydrofracturing,1.0,10,10.0
+2°C,GrIS,2300,DP,5,Ice cliff instability,2.0,10,20.0
+2°C,GrIS,2300,DP,6,Dissipation after iceberg formation,0.0,10,0.0
+2°C,GrIS,2100,SMB-G,AM,Atmospheric circulation / moisture transport,9.0,12,75.0
+2°C,GrIS,2100,SMB-G,AC,Albedo,3.0,12,25.0
+2°C,GrIS,2200,SMB-G,AM,Atmospheric circulation / moisture transport,7.0,12,58.333333333333336
+2°C,GrIS,2200,SMB-G,AC,Albedo,5.0,12,41.666666666666664
+2°C,GrIS,2300,SMB-G,AM,Atmospheric circulation / moisture transport,7.0,12,58.333333333333336
+2°C,GrIS,2300,SMB-G,AC,Albedo,5.0,12,41.666666666666664
+2°C,GrIS,2100,SMB-S,AM,Atmospheric circulation / moisture transport,11.0,11,100.0
+2°C,GrIS,2100,SMB-S,AC,Albedo,0.0,11,0.0
+2°C,GrIS,2100,SMB-S,SI,Summer sea-ice extent,0.0,11,0.0
+2°C,GrIS,2200,SMB-S,AM,Atmospheric circulation / moisture transport,7.0,11,63.63636363636363
+2°C,GrIS,2200,SMB-S,AC,Albedo,4.0,11,36.36363636363637
+2°C,GrIS,2200,SMB-S,SI,Summer sea-ice extent,0.0,11,0.0
+2°C,GrIS,2300,SMB-S,AM,Atmospheric circulation / moisture transport,5.0,11,45.45454545454545
+2°C,GrIS,2300,SMB-S,AC,Albedo,5.0,11,45.45454545454545
+2°C,GrIS,2300,SMB-S,SI,Summer sea-ice extent,1.0,11,9.090909090909092
+2°C,GrIS,2100,OP,MOC,Meridional overturning circulation,6.0,11,54.54545454545455
+2°C,GrIS,2100,OP,CDW,Circumpolar Deep Water,4.0,11,36.36363636363637
+2°C,GrIS,2100,OP,ACC,Antarctic Circumpolar Current,1.0,11,9.090909090909092
+2°C,GrIS,2200,OP,MOC,Meridional overturning circulation,7.0,11,63.63636363636363
+2°C,GrIS,2200,OP,CDW,Circumpolar Deep Water,3.0,11,27.272727272727273
+2°C,GrIS,2200,OP,ACC,Antarctic Circumpolar Current,1.0,11,9.090909090909092
+2°C,GrIS,2300,OP,MOC,Meridional overturning circulation,8.0,11,72.72727272727273
+2°C,GrIS,2300,OP,CDW,Circumpolar Deep Water,2.0,11,18.181818181818183
+2°C,GrIS,2300,OP,ACC,Antarctic Circumpolar Current,1.0,11,9.090909090909092
+2°C,WAIS,2100,DP,1,Buttressing by ice shelves,10.0,12,83.33333333333333
+2°C,WAIS,2100,DP,2,Basal traction,2.0,12,16.666666666666668
+2°C,WAIS,2100,DP,3,Transverse stresses,0.0,12,0.0
+2°C,WAIS,2100,DP,4,Hydrofracturing,0.0,12,0.0
+2°C,WAIS,2100,DP,5,Ice cliff instability,0.0,12,0.0
+2°C,WAIS,2100,DP,6,Dissipation after iceberg formation,0.0,12,0.0
+2°C,WAIS,2200,DP,1,Buttressing by ice shelves,8.0,12,66.66666666666667
+2°C,WAIS,2200,DP,2,Basal traction,2.0,12,16.666666666666668
+2°C,WAIS,2200,DP,3,Transverse stresses,0.0,12,0.0
+2°C,WAIS,2200,DP,4,Hydrofracturing,2.0,12,16.666666666666668
+2°C,WAIS,2200,DP,5,Ice cliff instability,0.0,12,0.0
+2°C,WAIS,2200,DP,6,Dissipation after iceberg formation,0.0,12,0.0
+2°C,WAIS,2300,DP,1,Buttressing by ice shelves,8.0,12,66.66666666666667
+2°C,WAIS,2300,DP,2,Basal traction,2.0,12,16.666666666666668
+2°C,WAIS,2300,DP,3,Transverse stresses,1.0,12,8.333333333333334
+2°C,WAIS,2300,DP,4,Hydrofracturing,0.0,12,0.0
+2°C,WAIS,2300,DP,5,Ice cliff instability,1.0,12,8.333333333333334
+2°C,WAIS,2300,DP,6,Dissipation after iceberg formation,0.0,12,0.0
+2°C,WAIS,2100,SMB-G,AM,Atmospheric circulation / moisture transport,11.0,13,84.61538461538461
+2°C,WAIS,2100,SMB-G,AC,Albedo,2.0,13,15.384615384615385
+2°C,WAIS,2200,SMB-G,AM,Atmospheric circulation / moisture transport,8.0,13,61.53846153846154
+2°C,WAIS,2200,SMB-G,AC,Albedo,5.0,13,38.46153846153846
+2°C,WAIS,2300,SMB-G,AM,Atmospheric circulation / moisture transport,9.0,13,69.23076923076923
+2°C,WAIS,2300,SMB-G,AC,Albedo,4.0,13,30.76923076923077
+2°C,WAIS,2100,SMB-S,AM,Atmospheric circulation / moisture transport,6.0,11,54.54545454545455
+2°C,WAIS,2100,SMB-S,AC,Albedo,0.0,11,0.0
+2°C,WAIS,2100,SMB-S,SI,Summer sea-ice extent,5.0,11,45.45454545454545
+2°C,WAIS,2200,SMB-S,AM,Atmospheric circulation / moisture transport,6.0,11,54.54545454545455
+2°C,WAIS,2200,SMB-S,AC,Albedo,2.0,11,18.181818181818183
+2°C,WAIS,2200,SMB-S,SI,Summer sea-ice extent,3.0,11,27.272727272727273
+2°C,WAIS,2300,SMB-S,AM,Atmospheric circulation / moisture transport,4.0,11,36.36363636363637
+2°C,WAIS,2300,SMB-S,AC,Albedo,3.0,11,27.272727272727273
+2°C,WAIS,2300,SMB-S,SI,Summer sea-ice extent,4.0,11,36.36363636363637
+2°C,WAIS,2100,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+2°C,WAIS,2100,OP,CDW,Circumpolar Deep Water,12.0,12,100.0
+2°C,WAIS,2100,OP,ACC,Antarctic Circumpolar Current,0.0,12,0.0
+2°C,WAIS,2200,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+2°C,WAIS,2200,OP,CDW,Circumpolar Deep Water,10.0,12,83.33333333333333
+2°C,WAIS,2200,OP,ACC,Antarctic Circumpolar Current,2.0,12,16.666666666666668
+2°C,WAIS,2300,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+2°C,WAIS,2300,OP,CDW,Circumpolar Deep Water,10.0,12,83.33333333333333
+2°C,WAIS,2300,OP,ACC,Antarctic Circumpolar Current,2.0,12,16.666666666666668
+2°C,EAIS,2100,DP,1,Buttressing by ice shelves,8.0,12,66.66666666666667
+2°C,EAIS,2100,DP,2,Basal traction,1.0,12,8.333333333333334
+2°C,EAIS,2100,DP,3,Transverse stresses,2.0,12,16.666666666666668
+2°C,EAIS,2100,DP,4,Hydrofracturing,0.0,12,0.0
+2°C,EAIS,2100,DP,5,Ice cliff instability,1.0,12,8.333333333333334
+2°C,EAIS,2100,DP,6,Dissipation after iceberg formation,0.0,12,0.0
+2°C,EAIS,2200,DP,1,Buttressing by ice shelves,6.0,12,50.0
+2°C,EAIS,2200,DP,2,Basal traction,1.0,12,8.333333333333334
+2°C,EAIS,2200,DP,3,Transverse stresses,2.0,12,16.666666666666668
+2°C,EAIS,2200,DP,4,Hydrofracturing,2.0,12,16.666666666666668
+2°C,EAIS,2200,DP,5,Ice cliff instability,1.0,12,8.333333333333334
+2°C,EAIS,2200,DP,6,Dissipation after iceberg formation,0.0,12,0.0
+2°C,EAIS,2300,DP,1,Buttressing by ice shelves,6.0,12,50.0
+2°C,EAIS,2300,DP,2,Basal traction,2.0,12,16.666666666666668
+2°C,EAIS,2300,DP,3,Transverse stresses,2.0,12,16.666666666666668
+2°C,EAIS,2300,DP,4,Hydrofracturing,0.0,12,0.0
+2°C,EAIS,2300,DP,5,Ice cliff instability,2.0,12,16.666666666666668
+2°C,EAIS,2300,DP,6,Dissipation after iceberg formation,0.0,12,0.0
+2°C,EAIS,2100,SMB-G,AM,Atmospheric circulation / moisture transport,12.0,13,92.3076923076923
+2°C,EAIS,2100,SMB-G,AC,Albedo,1.0,13,7.6923076923076925
+2°C,EAIS,2200,SMB-G,AM,Atmospheric circulation / moisture transport,11.0,13,84.61538461538461
+2°C,EAIS,2200,SMB-G,AC,Albedo,2.0,13,15.384615384615385
+2°C,EAIS,2300,SMB-G,AM,Atmospheric circulation / moisture transport,10.0,13,76.92307692307692
+2°C,EAIS,2300,SMB-G,AC,Albedo,3.0,13,23.076923076923077
+2°C,EAIS,2100,SMB-S,AM,Atmospheric circulation / moisture transport,7.0,11,63.63636363636363
+2°C,EAIS,2100,SMB-S,AC,Albedo,0.0,11,0.0
+2°C,EAIS,2100,SMB-S,SI,Summer sea-ice extent,4.0,11,36.36363636363637
+2°C,EAIS,2200,SMB-S,AM,Atmospheric circulation / moisture transport,9.0,11,81.81818181818181
+2°C,EAIS,2200,SMB-S,AC,Albedo,0.0,11,0.0
+2°C,EAIS,2200,SMB-S,SI,Summer sea-ice extent,2.0,11,18.181818181818183
+2°C,EAIS,2300,SMB-S,AM,Atmospheric circulation / moisture transport,6.0,11,54.54545454545455
+2°C,EAIS,2300,SMB-S,AC,Albedo,2.0,11,18.181818181818183
+2°C,EAIS,2300,SMB-S,SI,Summer sea-ice extent,3.0,11,27.272727272727273
+2°C,EAIS,2100,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+2°C,EAIS,2100,OP,CDW,Circumpolar Deep Water,8.0,12,66.66666666666667
+2°C,EAIS,2100,OP,ACC,Antarctic Circumpolar Current,4.0,12,33.333333333333336
+2°C,EAIS,2200,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+2°C,EAIS,2200,OP,CDW,Circumpolar Deep Water,7.0,12,58.333333333333336
+2°C,EAIS,2200,OP,ACC,Antarctic Circumpolar Current,5.0,12,41.666666666666664
+2°C,EAIS,2300,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+2°C,EAIS,2300,OP,CDW,Circumpolar Deep Water,7.0,12,58.333333333333336
+2°C,EAIS,2300,OP,ACC,Antarctic Circumpolar Current,5.0,12,41.666666666666664
+3.5°C,GrIS,2100,DP,1,Buttressing by ice shelves,1.0,9,11.11111111111111
+3.5°C,GrIS,2100,DP,2,Basal traction,5.0,9,55.55555555555556
+3.5°C,GrIS,2100,DP,3,Transverse stresses,1.0,9,11.11111111111111
+3.5°C,GrIS,2100,DP,4,Hydrofracturing,1.0,9,11.11111111111111
+3.5°C,GrIS,2100,DP,5,Ice cliff instability,1.0,9,11.11111111111111
+3.5°C,GrIS,2100,DP,6,Dissipation after iceberg formation,0.0,9,0.0
+3.5°C,GrIS,2200,DP,1,Buttressing by ice shelves,1.0,9,11.11111111111111
+3.5°C,GrIS,2200,DP,2,Basal traction,4.0,9,44.44444444444444
+3.5°C,GrIS,2200,DP,3,Transverse stresses,2.0,9,22.22222222222222
+3.5°C,GrIS,2200,DP,4,Hydrofracturing,1.0,9,11.11111111111111
+3.5°C,GrIS,2200,DP,5,Ice cliff instability,1.0,9,11.11111111111111
+3.5°C,GrIS,2200,DP,6,Dissipation after iceberg formation,0.0,9,0.0
+3.5°C,GrIS,2300,DP,1,Buttressing by ice shelves,1.0,9,11.11111111111111
+3.5°C,GrIS,2300,DP,2,Basal traction,4.0,9,44.44444444444444
+3.5°C,GrIS,2300,DP,3,Transverse stresses,2.0,9,22.22222222222222
+3.5°C,GrIS,2300,DP,4,Hydrofracturing,1.0,9,11.11111111111111
+3.5°C,GrIS,2300,DP,5,Ice cliff instability,1.0,9,11.11111111111111
+3.5°C,GrIS,2300,DP,6,Dissipation after iceberg formation,0.0,9,0.0
+3.5°C,GrIS,2100,SMB-G,AM,Atmospheric circulation / moisture transport,9.0,12,75.0
+3.5°C,GrIS,2100,SMB-G,AC,Albedo,3.0,12,25.0
+3.5°C,GrIS,2200,SMB-G,AM,Atmospheric circulation / moisture transport,7.0,12,58.333333333333336
+3.5°C,GrIS,2200,SMB-G,AC,Albedo,5.0,12,41.666666666666664
+3.5°C,GrIS,2300,SMB-G,AM,Atmospheric circulation / moisture transport,7.0,12,58.333333333333336
+3.5°C,GrIS,2300,SMB-G,AC,Albedo,5.0,12,41.666666666666664
+3.5°C,GrIS,2100,SMB-S,AM,Atmospheric circulation / moisture transport,8.0,10,80.0
+3.5°C,GrIS,2100,SMB-S,AC,Albedo,2.0,10,20.0
+3.5°C,GrIS,2100,SMB-S,SI,Summer sea-ice extent,0.0,10,0.0
+3.5°C,GrIS,2200,SMB-S,AM,Atmospheric circulation / moisture transport,4.0,10,40.0
+3.5°C,GrIS,2200,SMB-S,AC,Albedo,5.0,10,50.0
+3.5°C,GrIS,2200,SMB-S,SI,Summer sea-ice extent,1.0,10,10.0
+3.5°C,GrIS,2300,SMB-S,AM,Atmospheric circulation / moisture transport,4.0,10,40.0
+3.5°C,GrIS,2300,SMB-S,AC,Albedo,5.0,10,50.0
+3.5°C,GrIS,2300,SMB-S,SI,Summer sea-ice extent,1.0,10,10.0
+3.5°C,GrIS,2100,OP,MOC,Meridional overturning circulation,6.0,11,54.54545454545455
+3.5°C,GrIS,2100,OP,CDW,Circumpolar Deep Water,4.0,11,36.36363636363637
+3.5°C,GrIS,2100,OP,ACC,Antarctic Circumpolar Current,1.0,11,9.090909090909092
+3.5°C,GrIS,2200,OP,MOC,Meridional overturning circulation,8.0,11,72.72727272727273
+3.5°C,GrIS,2200,OP,CDW,Circumpolar Deep Water,2.0,11,18.181818181818183
+3.5°C,GrIS,2200,OP,ACC,Antarctic Circumpolar Current,1.0,11,9.090909090909092
+3.5°C,GrIS,2300,OP,MOC,Meridional overturning circulation,8.0,11,72.72727272727273
+3.5°C,GrIS,2300,OP,CDW,Circumpolar Deep Water,2.0,11,18.181818181818183
+3.5°C,GrIS,2300,OP,ACC,Antarctic Circumpolar Current,1.0,11,9.090909090909092
+3.5°C,WAIS,2100,DP,1,Buttressing by ice shelves,8.0,11,72.72727272727273
+3.5°C,WAIS,2100,DP,2,Basal traction,2.0,11,18.181818181818183
+3.5°C,WAIS,2100,DP,3,Transverse stresses,1.0,11,9.090909090909092
+3.5°C,WAIS,2100,DP,4,Hydrofracturing,0.0,11,0.0
+3.5°C,WAIS,2100,DP,5,Ice cliff instability,0.0,11,0.0
+3.5°C,WAIS,2100,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+3.5°C,WAIS,2200,DP,1,Buttressing by ice shelves,6.0,11,54.54545454545455
+3.5°C,WAIS,2200,DP,2,Basal traction,2.0,11,18.181818181818183
+3.5°C,WAIS,2200,DP,3,Transverse stresses,1.0,11,9.090909090909092
+3.5°C,WAIS,2200,DP,4,Hydrofracturing,2.0,11,18.181818181818183
+3.5°C,WAIS,2200,DP,5,Ice cliff instability,0.0,11,0.0
+3.5°C,WAIS,2200,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+3.5°C,WAIS,2300,DP,1,Buttressing by ice shelves,5.0,11,45.45454545454545
+3.5°C,WAIS,2300,DP,2,Basal traction,2.0,11,18.181818181818183
+3.5°C,WAIS,2300,DP,3,Transverse stresses,0.0,11,0.0
+3.5°C,WAIS,2300,DP,4,Hydrofracturing,3.0,11,27.272727272727273
+3.5°C,WAIS,2300,DP,5,Ice cliff instability,1.0,11,9.090909090909092
+3.5°C,WAIS,2300,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+3.5°C,WAIS,2100,SMB-G,AM,Atmospheric circulation / moisture transport,9.0,13,69.23076923076923
+3.5°C,WAIS,2100,SMB-G,AC,Albedo,4.0,13,30.76923076923077
+3.5°C,WAIS,2200,SMB-G,AM,Atmospheric circulation / moisture transport,8.0,13,61.53846153846154
+3.5°C,WAIS,2200,SMB-G,AC,Albedo,5.0,13,38.46153846153846
+3.5°C,WAIS,2300,SMB-G,AM,Atmospheric circulation / moisture transport,9.0,13,69.23076923076923
+3.5°C,WAIS,2300,SMB-G,AC,Albedo,4.0,13,30.76923076923077
+3.5°C,WAIS,2100,SMB-S,AM,Atmospheric circulation / moisture transport,5.0,10,50.0
+3.5°C,WAIS,2100,SMB-S,AC,Albedo,1.0,10,10.0
+3.5°C,WAIS,2100,SMB-S,SI,Summer sea-ice extent,4.0,10,40.0
+3.5°C,WAIS,2200,SMB-S,AM,Atmospheric circulation / moisture transport,5.0,10,50.0
+3.5°C,WAIS,2200,SMB-S,AC,Albedo,2.0,10,20.0
+3.5°C,WAIS,2200,SMB-S,SI,Summer sea-ice extent,3.0,10,30.0
+3.5°C,WAIS,2300,SMB-S,AM,Atmospheric circulation / moisture transport,4.0,10,40.0
+3.5°C,WAIS,2300,SMB-S,AC,Albedo,3.0,10,30.0
+3.5°C,WAIS,2300,SMB-S,SI,Summer sea-ice extent,3.0,10,30.0
+3.5°C,WAIS,2100,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+3.5°C,WAIS,2100,OP,CDW,Circumpolar Deep Water,12.0,12,100.0
+3.5°C,WAIS,2100,OP,ACC,Antarctic Circumpolar Current,0.0,12,0.0
+3.5°C,WAIS,2200,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+3.5°C,WAIS,2200,OP,CDW,Circumpolar Deep Water,10.0,12,83.33333333333333
+3.5°C,WAIS,2200,OP,ACC,Antarctic Circumpolar Current,2.0,12,16.666666666666668
+3.5°C,WAIS,2300,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+3.5°C,WAIS,2300,OP,CDW,Circumpolar Deep Water,9.0,12,75.0
+3.5°C,WAIS,2300,OP,ACC,Antarctic Circumpolar Current,3.0,12,25.0
+3.5°C,EAIS,2100,DP,1,Buttressing by ice shelves,7.0,11,63.63636363636363
+3.5°C,EAIS,2100,DP,2,Basal traction,1.0,11,9.090909090909092
+3.5°C,EAIS,2100,DP,3,Transverse stresses,2.0,11,18.181818181818183
+3.5°C,EAIS,2100,DP,4,Hydrofracturing,0.0,11,0.0
+3.5°C,EAIS,2100,DP,5,Ice cliff instability,1.0,11,9.090909090909092
+3.5°C,EAIS,2100,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+3.5°C,EAIS,2200,DP,1,Buttressing by ice shelves,5.0,11,45.45454545454545
+3.5°C,EAIS,2200,DP,2,Basal traction,1.0,11,9.090909090909092
+3.5°C,EAIS,2200,DP,3,Transverse stresses,1.0,11,9.090909090909092
+3.5°C,EAIS,2200,DP,4,Hydrofracturing,2.0,11,18.181818181818183
+3.5°C,EAIS,2200,DP,5,Ice cliff instability,2.0,11,18.181818181818183
+3.5°C,EAIS,2200,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+3.5°C,EAIS,2300,DP,1,Buttressing by ice shelves,4.0,11,36.36363636363637
+3.5°C,EAIS,2300,DP,2,Basal traction,2.0,11,18.181818181818183
+3.5°C,EAIS,2300,DP,3,Transverse stresses,1.0,11,9.090909090909092
+3.5°C,EAIS,2300,DP,4,Hydrofracturing,2.0,11,18.181818181818183
+3.5°C,EAIS,2300,DP,5,Ice cliff instability,2.0,11,18.181818181818183
+3.5°C,EAIS,2300,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+3.5°C,EAIS,2100,SMB-G,AM,Atmospheric circulation / moisture transport,10.0,13,76.92307692307692
+3.5°C,EAIS,2100,SMB-G,AC,Albedo,3.0,13,23.076923076923077
+3.5°C,EAIS,2200,SMB-G,AM,Atmospheric circulation / moisture transport,10.0,13,76.92307692307692
+3.5°C,EAIS,2200,SMB-G,AC,Albedo,3.0,13,23.076923076923077
+3.5°C,EAIS,2300,SMB-G,AM,Atmospheric circulation / moisture transport,11.0,13,84.61538461538461
+3.5°C,EAIS,2300,SMB-G,AC,Albedo,2.0,13,15.384615384615385
+3.5°C,EAIS,2100,SMB-S,AM,Atmospheric circulation / moisture transport,7.0,10,70.0
+3.5°C,EAIS,2100,SMB-S,AC,Albedo,0.0,10,0.0
+3.5°C,EAIS,2100,SMB-S,SI,Summer sea-ice extent,3.0,10,30.0
+3.5°C,EAIS,2200,SMB-S,AM,Atmospheric circulation / moisture transport,6.0,10,60.0
+3.5°C,EAIS,2200,SMB-S,AC,Albedo,2.0,10,20.0
+3.5°C,EAIS,2200,SMB-S,SI,Summer sea-ice extent,2.0,10,20.0
+3.5°C,EAIS,2300,SMB-S,AM,Atmospheric circulation / moisture transport,5.0,10,50.0
+3.5°C,EAIS,2300,SMB-S,AC,Albedo,3.0,10,30.0
+3.5°C,EAIS,2300,SMB-S,SI,Summer sea-ice extent,2.0,10,20.0
+3.5°C,EAIS,2100,OP,MOC,Meridional overturning circulation,1.0,12,8.333333333333334
+3.5°C,EAIS,2100,OP,CDW,Circumpolar Deep Water,7.0,12,58.333333333333336
+3.5°C,EAIS,2100,OP,ACC,Antarctic Circumpolar Current,4.0,12,33.333333333333336
+3.5°C,EAIS,2200,OP,MOC,Meridional overturning circulation,1.0,12,8.333333333333334
+3.5°C,EAIS,2200,OP,CDW,Circumpolar Deep Water,6.0,12,50.0
+3.5°C,EAIS,2200,OP,ACC,Antarctic Circumpolar Current,5.0,12,41.666666666666664
+3.5°C,EAIS,2300,OP,MOC,Meridional overturning circulation,1.0,12,8.333333333333334
+3.5°C,EAIS,2300,OP,CDW,Circumpolar Deep Water,6.0,12,50.0
+3.5°C,EAIS,2300,OP,ACC,Antarctic Circumpolar Current,5.0,12,41.666666666666664
+5°C,GrIS,2100,DP,1,Buttressing by ice shelves,1.0,9,11.11111111111111
+5°C,GrIS,2100,DP,2,Basal traction,5.0,9,55.55555555555556
+5°C,GrIS,2100,DP,3,Transverse stresses,1.0,9,11.11111111111111
+5°C,GrIS,2100,DP,4,Hydrofracturing,1.0,9,11.11111111111111
+5°C,GrIS,2100,DP,5,Ice cliff instability,1.0,9,11.11111111111111
+5°C,GrIS,2100,DP,6,Dissipation after iceberg formation,0.0,9,0.0
+5°C,GrIS,2200,DP,1,Buttressing by ice shelves,1.0,9,11.11111111111111
+5°C,GrIS,2200,DP,2,Basal traction,4.0,9,44.44444444444444
+5°C,GrIS,2200,DP,3,Transverse stresses,2.0,9,22.22222222222222
+5°C,GrIS,2200,DP,4,Hydrofracturing,1.0,9,11.11111111111111
+5°C,GrIS,2200,DP,5,Ice cliff instability,1.0,9,11.11111111111111
+5°C,GrIS,2200,DP,6,Dissipation after iceberg formation,0.0,9,0.0
+5°C,GrIS,2300,DP,1,Buttressing by ice shelves,1.0,9,11.11111111111111
+5°C,GrIS,2300,DP,2,Basal traction,4.0,9,44.44444444444444
+5°C,GrIS,2300,DP,3,Transverse stresses,2.0,9,22.22222222222222
+5°C,GrIS,2300,DP,4,Hydrofracturing,1.0,9,11.11111111111111
+5°C,GrIS,2300,DP,5,Ice cliff instability,1.0,9,11.11111111111111
+5°C,GrIS,2300,DP,6,Dissipation after iceberg formation,0.0,9,0.0
+5°C,GrIS,2100,SMB-G,AM,Atmospheric circulation / moisture transport,7.0,12,58.333333333333336
+5°C,GrIS,2100,SMB-G,AC,Albedo,5.0,12,41.666666666666664
+5°C,GrIS,2200,SMB-G,AM,Atmospheric circulation / moisture transport,6.0,12,50.0
+5°C,GrIS,2200,SMB-G,AC,Albedo,6.0,12,50.0
+5°C,GrIS,2300,SMB-G,AM,Atmospheric circulation / moisture transport,6.0,12,50.0
+5°C,GrIS,2300,SMB-G,AC,Albedo,6.0,12,50.0
+5°C,GrIS,2100,SMB-S,AM,Atmospheric circulation / moisture transport,6.0,10,60.0
+5°C,GrIS,2100,SMB-S,AC,Albedo,4.0,10,40.0
+5°C,GrIS,2100,SMB-S,SI,Summer sea-ice extent,0.0,10,0.0
+5°C,GrIS,2200,SMB-S,AM,Atmospheric circulation / moisture transport,4.0,10,40.0
+5°C,GrIS,2200,SMB-S,AC,Albedo,5.0,10,50.0
+5°C,GrIS,2200,SMB-S,SI,Summer sea-ice extent,1.0,10,10.0
+5°C,GrIS,2300,SMB-S,AM,Atmospheric circulation / moisture transport,4.0,10,40.0
+5°C,GrIS,2300,SMB-S,AC,Albedo,5.0,10,50.0
+5°C,GrIS,2300,SMB-S,SI,Summer sea-ice extent,1.0,10,10.0
+5°C,GrIS,2100,OP,MOC,Meridional overturning circulation,6.0,11,54.54545454545455
+5°C,GrIS,2100,OP,CDW,Circumpolar Deep Water,4.0,11,36.36363636363637
+5°C,GrIS,2100,OP,ACC,Antarctic Circumpolar Current,1.0,11,9.090909090909092
+5°C,GrIS,2200,OP,MOC,Meridional overturning circulation,8.0,11,72.72727272727273
+5°C,GrIS,2200,OP,CDW,Circumpolar Deep Water,2.0,11,18.181818181818183
+5°C,GrIS,2200,OP,ACC,Antarctic Circumpolar Current,1.0,11,9.090909090909092
+5°C,GrIS,2300,OP,MOC,Meridional overturning circulation,8.0,11,72.72727272727273
+5°C,GrIS,2300,OP,CDW,Circumpolar Deep Water,2.0,11,18.181818181818183
+5°C,GrIS,2300,OP,ACC,Antarctic Circumpolar Current,1.0,11,9.090909090909092
+5°C,WAIS,2100,DP,1,Buttressing by ice shelves,6.0,11,54.54545454545455
+5°C,WAIS,2100,DP,2,Basal traction,2.0,11,18.181818181818183
+5°C,WAIS,2100,DP,3,Transverse stresses,1.0,11,9.090909090909092
+5°C,WAIS,2100,DP,4,Hydrofracturing,1.0,11,9.090909090909092
+5°C,WAIS,2100,DP,5,Ice cliff instability,1.0,11,9.090909090909092
+5°C,WAIS,2100,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+5°C,WAIS,2200,DP,1,Buttressing by ice shelves,3.0,11,27.272727272727273
+5°C,WAIS,2200,DP,2,Basal traction,2.0,11,18.181818181818183
+5°C,WAIS,2200,DP,3,Transverse stresses,1.0,11,9.090909090909092
+5°C,WAIS,2200,DP,4,Hydrofracturing,4.0,11,36.36363636363637
+5°C,WAIS,2200,DP,5,Ice cliff instability,1.0,11,9.090909090909092
+5°C,WAIS,2200,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+5°C,WAIS,2300,DP,1,Buttressing by ice shelves,3.0,11,27.272727272727273
+5°C,WAIS,2300,DP,2,Basal traction,2.0,11,18.181818181818183
+5°C,WAIS,2300,DP,3,Transverse stresses,0.0,11,0.0
+5°C,WAIS,2300,DP,4,Hydrofracturing,4.0,11,36.36363636363637
+5°C,WAIS,2300,DP,5,Ice cliff instability,2.0,11,18.181818181818183
+5°C,WAIS,2300,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+5°C,WAIS,2100,SMB-G,AM,Atmospheric circulation / moisture transport,9.0,13,69.23076923076923
+5°C,WAIS,2100,SMB-G,AC,Albedo,4.0,13,30.76923076923077
+5°C,WAIS,2200,SMB-G,AM,Atmospheric circulation / moisture transport,9.0,13,69.23076923076923
+5°C,WAIS,2200,SMB-G,AC,Albedo,4.0,13,30.76923076923077
+5°C,WAIS,2300,SMB-G,AM,Atmospheric circulation / moisture transport,9.0,13,69.23076923076923
+5°C,WAIS,2300,SMB-G,AC,Albedo,4.0,13,30.76923076923077
+5°C,WAIS,2100,SMB-S,AM,Atmospheric circulation / moisture transport,4.0,10,40.0
+5°C,WAIS,2100,SMB-S,AC,Albedo,2.0,10,20.0
+5°C,WAIS,2100,SMB-S,SI,Summer sea-ice extent,4.0,10,40.0
+5°C,WAIS,2200,SMB-S,AM,Atmospheric circulation / moisture transport,5.0,10,50.0
+5°C,WAIS,2200,SMB-S,AC,Albedo,3.0,10,30.0
+5°C,WAIS,2200,SMB-S,SI,Summer sea-ice extent,2.0,10,20.0
+5°C,WAIS,2300,SMB-S,AM,Atmospheric circulation / moisture transport,4.0,9,44.44444444444444
+5°C,WAIS,2300,SMB-S,AC,Albedo,3.0,9,33.333333333333336
+5°C,WAIS,2300,SMB-S,SI,Summer sea-ice extent,2.0,9,22.22222222222222
+5°C,WAIS,2100,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+5°C,WAIS,2100,OP,CDW,Circumpolar Deep Water,12.0,12,100.0
+5°C,WAIS,2100,OP,ACC,Antarctic Circumpolar Current,0.0,12,0.0
+5°C,WAIS,2200,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+5°C,WAIS,2200,OP,CDW,Circumpolar Deep Water,10.0,12,83.33333333333333
+5°C,WAIS,2200,OP,ACC,Antarctic Circumpolar Current,2.0,12,16.666666666666668
+5°C,WAIS,2300,OP,MOC,Meridional overturning circulation,0.0,12,0.0
+5°C,WAIS,2300,OP,CDW,Circumpolar Deep Water,8.0,12,66.66666666666667
+5°C,WAIS,2300,OP,ACC,Antarctic Circumpolar Current,4.0,12,33.333333333333336
+5°C,EAIS,2100,DP,1,Buttressing by ice shelves,5.0,11,45.45454545454545
+5°C,EAIS,2100,DP,2,Basal traction,1.0,11,9.090909090909092
+5°C,EAIS,2100,DP,3,Transverse stresses,1.0,11,9.090909090909092
+5°C,EAIS,2100,DP,4,Hydrofracturing,2.0,11,18.181818181818183
+5°C,EAIS,2100,DP,5,Ice cliff instability,2.0,11,18.181818181818183
+5°C,EAIS,2100,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+5°C,EAIS,2200,DP,1,Buttressing by ice shelves,2.0,11,18.181818181818183
+5°C,EAIS,2200,DP,2,Basal traction,2.0,11,18.181818181818183
+5°C,EAIS,2200,DP,3,Transverse stresses,1.0,11,9.090909090909092
+5°C,EAIS,2200,DP,4,Hydrofracturing,3.0,11,27.272727272727273
+5°C,EAIS,2200,DP,5,Ice cliff instability,3.0,11,27.272727272727273
+5°C,EAIS,2200,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+5°C,EAIS,2300,DP,1,Buttressing by ice shelves,2.0,11,18.181818181818183
+5°C,EAIS,2300,DP,2,Basal traction,1.0,11,9.090909090909092
+5°C,EAIS,2300,DP,3,Transverse stresses,2.0,11,18.181818181818183
+5°C,EAIS,2300,DP,4,Hydrofracturing,3.0,11,27.272727272727273
+5°C,EAIS,2300,DP,5,Ice cliff instability,3.0,11,27.272727272727273
+5°C,EAIS,2300,DP,6,Dissipation after iceberg formation,0.0,11,0.0
+5°C,EAIS,2100,SMB-G,AM,Atmospheric circulation / moisture transport,9.0,13,69.23076923076923
+5°C,EAIS,2100,SMB-G,AC,Albedo,4.0,13,30.76923076923077
+5°C,EAIS,2200,SMB-G,AM,Atmospheric circulation / moisture transport,10.0,13,76.92307692307692
+5°C,EAIS,2200,SMB-G,AC,Albedo,3.0,13,23.076923076923077
+5°C,EAIS,2300,SMB-G,AM,Atmospheric circulation / moisture transport,10.0,13,76.92307692307692
+5°C,EAIS,2300,SMB-G,AC,Albedo,3.0,13,23.076923076923077
+5°C,EAIS,2100,SMB-S,AM,Atmospheric circulation / moisture transport,5.0,10,50.0
+5°C,EAIS,2100,SMB-S,AC,Albedo,2.0,10,20.0
+5°C,EAIS,2100,SMB-S,SI,Summer sea-ice extent,3.0,10,30.0
+5°C,EAIS,2200,SMB-S,AM,Atmospheric circulation / moisture transport,6.0,10,60.0
+5°C,EAIS,2200,SMB-S,AC,Albedo,3.0,10,30.0
+5°C,EAIS,2200,SMB-S,SI,Summer sea-ice extent,1.0,10,10.0
+5°C,EAIS,2300,SMB-S,AM,Atmospheric circulation / moisture transport,5.0,10,50.0
+5°C,EAIS,2300,SMB-S,AC,Albedo,4.0,10,40.0
+5°C,EAIS,2300,SMB-S,SI,Summer sea-ice extent,1.0,10,10.0
+5°C,EAIS,2100,OP,MOC,Meridional overturning circulation,1.0,12,8.333333333333334
+5°C,EAIS,2100,OP,CDW,Circumpolar Deep Water,7.0,12,58.333333333333336
+5°C,EAIS,2100,OP,ACC,Antarctic Circumpolar Current,4.0,12,33.333333333333336
+5°C,EAIS,2200,OP,MOC,Meridional overturning circulation,1.0,12,8.333333333333334
+5°C,EAIS,2200,OP,CDW,Circumpolar Deep Water,7.0,12,58.333333333333336
+5°C,EAIS,2200,OP,ACC,Antarctic Circumpolar Current,4.0,12,33.333333333333336
+5°C,EAIS,2300,OP,MOC,Meridional overturning circulation,1.0,12,8.333333333333334
+5°C,EAIS,2300,OP,CDW,Circumpolar Deep Water,5.0,12,41.666666666666664
+5°C,EAIS,2300,OP,ACC,Antarctic Circumpolar Current,6.0,12,50.0

@@ -55,7 +55,7 @@ from B25data_processing import (
 # 1. SETTINGS
 # ============================================================
 
-output_dir = str(output_for("04_endpoint_distributions", "process_violin"))
+output_dir = str(output_for("05_endpoint_distributions", "process_violin"))
 
 os.makedirs(
     output_dir,

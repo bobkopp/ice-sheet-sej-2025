@@ -46,7 +46,7 @@ from matplotlib.ticker import MaxNLocator, AutoMinorLocator
 # ============================================================================
 
 DATA_FILE = EXPERT_WORKBOOK_FILE
-OUTPUT_DIR = output_for("02_expert_judgments")
+OUTPUT_DIR = output_for("03_expert_judgments")
 
 MAKE_CALIBRATION_PLOTS = True
 MAKE_TARGET_PLOTS = True

@@ -80,9 +80,9 @@ from B25data_processing import (
 
 input_file = str(EXPERT_QUESTIONS_FILE)
 
-figure_output_dir = str(output_for("03_uncertainty_drivers", "figures"))
+figure_output_dir = str(output_for("04_uncertainty_drivers", "figures"))
 
-table_output_dir = str(output_for("03_uncertainty_drivers", "tables"))
+table_output_dir = str(output_for("04_uncertainty_drivers", "tables"))
 
 os.makedirs(
     figure_output_dir,

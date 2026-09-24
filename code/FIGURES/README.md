@@ -6,7 +6,7 @@ The `originals/` folder contains untouched copies of all uploads for comparison.
 The actual scientific methods and input arrays remain in your plotting scripts.
 **This package reads existing projections; it does not rerun or resample them.**
 
-## Install without overwriting your existing FIGURES folder
+## Install dependencies
 
 Install dependencies in the Python environment you use for figures:
 
@@ -64,20 +64,20 @@ input paths and configuration.
 FIGURE_OUTPUT_DIR/
   01_warming_reference/
   02_expert_performance/
-  02_expert_judgments/
-  03_uncertainty_drivers/
+  03_expert_judgments/
+  04_uncertainty_drivers/
       figures/
       tables/
-  04_endpoint_distributions/
+  05_endpoint_distributions/
       b19_comparisons/
       process_violin/
-  05_annual_trajectories/
+  06_annual_trajectories/
       warming_scenarios/
       warming_scenario_grids/
       ar6_comparisons/
       ssp_projections/
       correlations/
-  06_cmip6_cmip7/
+  07_cmip6_cmip7/
       scenario_panels/
       realized_fractions/
   run_manifest.json

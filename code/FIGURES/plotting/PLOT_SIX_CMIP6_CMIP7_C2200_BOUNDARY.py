@@ -55,7 +55,7 @@ SHOW_2050_TRANSITION = False    # Optional subtle dashed guide
 
 # Use a NEW output directory; older plots containing seven CMIP7 pathways
 # elsewhere in the project will not be mistaken for these four-pathway plots.
-OUTPUT_DIR = output_for("06_cmip6_cmip7", "scenario_panels")
+OUTPUT_DIR = output_for("07_cmip6_cmip7", "scenario_panels")
 
 # This script reads ONLY [2100, 2200] checkpoints with the C2200 hard boundary.
 METHOD_ID = 'B_2100_2200_boundary_2200'
