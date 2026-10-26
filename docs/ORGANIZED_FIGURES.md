@@ -32,11 +32,3 @@ python scripts/RUN_FINAL_FIGURES.py --only warming --execute
 ```
 
 `--execute` is mandatory; otherwise no figure scripts run. By default, all 11 approved groups are selected. Running to a nonempty group destination requires `--allow-overwrite`; preferably use `--output-root` with a new isolated folder. Legacy consolidated suite runs only if explicitly specified using `--only consolidated_legacy`.
-
-## Script attribution and timestamps
-
-The top-level Python module docstrings now include the author: **Elizabeth H. Davis, Ph.D. (email: elizabeth.h.davis@rutgers.edu)**. Existing `Created on` date/time information is preserved. For scripts without an original timestamp, the header explicitly says the original timestamp was not recorded. This is not a guessed creation date.
-
-## Validation scope
-
-All 41 scripts passed static Python syntax parsing following edits. **The reorganized figure runner has not yet been executed against the user's local scientific inputs.** The previously validated core results are unchanged by this update, other than additions to file headers and `figure_settings` figure-path mapping when `SEJ_ORGANIZED_FIGURES=1`.
