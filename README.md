@@ -93,7 +93,6 @@ export SEJ_CORE_OUTPUT_ROOT="$PWD/output/reproduction_run_01"
 
 A valid `SEJ_DATA_DIR` contains `sej2025_SplitPanels_liz_updated.csv`, `historical_observations/imbie_2023/`, `fair_output/`, and `temporal_correlation_matrices/GrIS_FittedISMIP_scenario_specific/`. A valid `SEJ_FACTS2_ROOT` contains the referenced emulandice experiments, FaIR2 GSAT experiment outputs, and DeConto21 model inputs. The complete checks also inspect pathway-specific files.
 
-Do **not** run `source test_environment.sh` from older development copies: that file used paths tied to the earlier research checkout.
 
 ### 3. Inspect and execute the interpolation chain
 
@@ -149,5 +148,3 @@ For specific original and interpolation manuscript figure assignments, see [`doc
 - [ ] Archive manuscript figure files in `figures/` with a definitive figure-to-script manifest.
 - [ ] Publish the GitHub repository and mint a **separate code DOI** via a versioned Zenodo GitHub release; do not use the study-data DOI as a code-release DOI.
 - [ ] Cite both the appropriate data release and the metarepo software release in the paper's Data Availability/Code Availability sections.
-
-For template-specific publishing steps see the [IMMM-SFA metarepo guide](https://immm-sfa.github.io/metarepo/).
