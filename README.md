@@ -8,7 +8,7 @@ This repository follows the [IMMM-SFA metarepo template](https://github.com/IMMM
 
 ## Abstract
 
-[Insert the final approved manuscript abstract.]
+Structured expert judgement (SEJ) is an established method for estimating the likelihood of deeply uncertain outcomes, such as century-to-multicentury ice-sheet changes. We used SEJ to estimate ice-sheet changes through 2300 under scenarios stabilizing in 2100 at 2°C, 3.5°C, and 5°C of global warming. Under a 2°C scenario, the projected median (5th–95th percentile) ice-sheet contribution to GMSL change is 23 (−16 to 76) cm by 2100 and 131 (−45 to 420) cm by 2300; under a 5°C scenario, these values rise to 42 (−34 to 181) cm by 2100 and 365 (10 to 1120) cm by 2300. Relative to a comparable 2018 study, upper-end projections are similar while low-end projections reflect a greater probability of a significant increase in Antarctic accumulation. Combining elicitation results with probabilistic interpolation indicates a GMSL contribution from the Greenland ice sheet under SSP2-4.5 of 16 (−4 to 43) cm by 2100, 33 (−6 to 93) cm by 2150, and 77 (−17 to 234) cm by 2300, exceeding corresponding Intergovernmental Panel on Climate Change Sixth Assessment Report (AR6) medium-confidence estimates in uncertainty and, for 2100 and 2150, median values. For Antarctica, projections of 11 (−34 to 85) cm by 2100, 26 (−54 to 191) cm by 2150, and 105 (−84 to 532) cm by 2300 are more uncertain than AR6 medium-confidence projections. Accounting for tail dependence, 95th-percentile total ice-sheet contributions reach 1.1 m by 2100 and 2.5 m by 2150 under SSP2-4.5, highlighting the potential for multi-meter GMSL rise in the 22nd century under intermediate emissions.
 
 ## Journal reference
 
