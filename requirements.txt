@@ -1,0 +1,10 @@
+# Direct third-party imports across the scientific and figure scripts.
+numpy
+pandas
+scipy
+matplotlib
+seaborn
+xarray
+netCDF4
+openpyxl
+Pillow
