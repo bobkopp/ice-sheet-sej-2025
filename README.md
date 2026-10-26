@@ -65,7 +65,9 @@ docs/                 Figure manifest, portability notes and workflow documentat
 output/               Local generated products, ignored by Git
 ```
 
-**The two workflows are distinct:** `original_sej/` operates on pre-generated expert judgement / Monte Carlo input data; it does **not** regenerate the elicitation or original draws. `interpolation/` starts from those Monte Carlo draws and externally generated FaIR/FACTS2 inputs to construct scenario-based, time-dependent projections.
+**The two workflows are distinct:**
+`original_sej/` operates on pre-generated expert judgement / Monte Carlo input data; it does **not** regenerate the elicitation or original draws.
+`interpolation/` starts from those Monte Carlo draws and externally generated FaIR/FACTS2 inputs to construct scenario-based, time-dependent projections.
 
 ### 1. Install Python dependencies
 
