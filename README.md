@@ -113,11 +113,9 @@ Select stage codes with `--stages` (comma-separated). Follow the runner's `--lis
 | `01`, `01B` | CMIP6 and CMIP7 FaIR-to-SEJ scenario selection |
 | `02` | Temporal coupling with 2050 emulandice and multi-year targets |
 | `03`, `03B` | CMIP6 and CMIP7 annual trajectories |
-| `CRN` | CMIP7 common-random-number diagnostics |
 | `04` | Manuscript tables |
 | `05` | Formatted manuscript and supplementary tables; also requires `TABLE_OUTPUT_ROOT` under `output/` |
 
-Some later stages are computationally expensive. Do not treat a successful file-input check as evidence that every downstream stage has been reproduced independently.
 
 ### 4. Reproduce original SEJ analyses
 
