@@ -1,8 +1,8 @@
-# Ice-sheet projections from structured expert judgement — reproducibility metarepo
+# Ice-sheet projections from structured expert judgement
 
 > **Publication metadata pending.** Add the final paper title, coauthors, journal citation, publication DOI, code-release DOI, and finalized licenses once confirmed. This is a pre-release research repository, not a claim that every workflow has been independently reproduced.
 
-This repository follows the [IMMM-SFA metarepo template](https://github.com/IMMM-SFA/metarepo) to provide one entry point for the software, input datasets, figures, and instructions used in a study of Greenland and Antarctic ice-sheet contributions to global mean sea-level change through 2300. The study uses structured expert judgement (SEJ), with scenario-based interpolation informed by FaIR, FACTS2, IMBIE observations, DeConto et al. (2021), fitted ISMIP6, and emulandice.
+This repository provides the software, input datasets, figures, and instructions used in a study of Greenland and Antarctic ice-sheet contributions to global mean sea-level change through 2300. The study uses structured expert judgement (SEJ), with scenario-based interpolation informed by FaIR, FACTS2, IMBIE observations, DeConto et al. (2021), fitted ISMIP6, and emulandice.
 
 **Manuscript:** [Insert final manuscript title, authors, journal, year, and publication URL/DOI]
 
@@ -34,12 +34,10 @@ Structured expert judgement (SEJ) is an established method for estimating the li
 | emulandice EAIS, WAIS, GrIS outputs | Intermediate 2050 probabilistic constraints | FACTS2 emulandice experiments; [add version, DOI, and archived outputs] |
 | IPCC AR6 comparison inputs | Reference projections for selected figures | [Insert AR6 projection release and prescribed acknowledgement/citation] |
 
-**No large scientific input data are committed to this GitHub repository.** Files referenced here may require access to a separate data release or reproducing an upstream model run. Their presence at the linked record has not been independently checked for this README.
 
 ### Output data
 
 - Scenario-selection tables, temporally coupled SEJ draws, annual trajectories, and manuscript tables are created under `output/` (excluded from Git).
-- [Insert archived output-data DOI/file mapping once the study deposit is finalized.]
 
 ## Contributing modeling software
 
@@ -126,11 +124,6 @@ Some later stages are computationally expensive. Do not treat a successful file-
 
 The `scripts/original_sej/` scripts generate the original expert performance, driver, distribution, warming-reference and other figures from externally supplied elicitation/Monte Carlo files. Use the figure runner below or inspect each script's input configuration. Original expert judgement input creation is outside the scope of this repository.
 
-### Reproducibility status
-
-- Organized figures and scientific stages were compared with earlier production results during migration; a post-retirement Stage 01 run matched production byte-for-byte (60,000 CMIP6 rows).
-- Standalone repository root detection and all 32 Stage 00 scientific file checks passed with external inputs configured; standalone Stage 01 executed successfully.
-- This README does **not** claim full, fresh execution of Stage 02 through Stage 05 from a public download or frozen software environment.
 
 ## Reproduce my figures
 
