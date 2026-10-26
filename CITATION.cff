@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "Please cite the published manuscript and this repository's versioned release when available."
+type: software
+title: "Ice-sheet structured expert judgement projections: reproducibility metarepo"
+authors:
+  - family-names: Davis
+    given-names: Elizabeth H.
+# Pre-release citation metadata. Confirm repository attribution and add
+# other contributors, ORCIDs, version, release date, repository URL and DOI.
