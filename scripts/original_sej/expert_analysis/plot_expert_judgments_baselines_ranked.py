@@ -1,7 +1,6 @@
 """
 Expert-judgment plots for the 2025 split-panel elicitation workbook.
 
-Updates in this version
 -----------------------
 1. Reads the supplied workbook: 2025_FINAL_Split_Panels(4).xls
 2. Uses separate DTT expert-ID mappings for WEA (WAIS/EAIS) and GrIS.

@@ -3,7 +3,7 @@
 
 The plotted surfaces are computed from the same normalized Euclidean IDW p=1
 formula and two-checkpoint deterministic boundary specified in stages 01/01B.
-No SEJ scenario is re-sampled here; this is a figure-only operation.
+
 
 Created on: 2026-10-26
 Author: Elizabeth H. Davis, Ph.D. (email: elizabeth.h.davis@rutgers.edu)
