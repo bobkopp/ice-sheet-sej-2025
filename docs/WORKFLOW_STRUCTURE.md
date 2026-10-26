@@ -22,6 +22,6 @@ Externally produced SEJ Monte Carlo input, expert calibration and driver analyse
 - `scripts/runners/RUN_CORE_METHOD_CHAIN.py`: preview and guarded stage execution
 - `scripts/runners/RUN_FINAL_FIGURES.py`: preview and organized figure generation
 
-Both runners execute organized source files, not the retired flat copies. The runner subprocesses place `scripts/shared/` and the necessary helper directories on Python's import path. Configure `SEJ_DATA_DIR` and `SEJ_FACTS2_ROOT` to use external inputs. Set `SEJ_CORE_OUTPUT_ROOT` under this repository's `output/` before executing; Stage 05 also needs `TABLE_OUTPUT_ROOT` under `output/`.
+Both runners execute organized source files. The runner subprocesses place `scripts/shared/` and the necessary helper directories on Python's import path. Configure `SEJ_DATA_DIR` and `SEJ_FACTS2_ROOT` to use external inputs. Set `SEJ_CORE_OUTPUT_ROOT` under this repository's `output/` before executing; Stage 05 also needs `TABLE_OUTPUT_ROOT` under `output/`.
 
 The core runner blocks output overwrites. For exact commands and input-layout requirements see the top-level README.
