@@ -1,4 +1,4 @@
-# Ice-sheet projections from structured expert judgement
+<img width="468" height="13" alt="image" src="https://github.com/user-attachments/assets/5d1a56d7-7400-4cd9-ae59-687ac99d33fa" /># Ice-sheet projections from structured expert judgement
 
 > **Publication metadata pending.** Add the final paper title, coauthors, journal citation, publication DOI, code-release DOI, and finalized licenses once confirmed. This is a pre-release research repository, not a claim that every workflow has been independently reproduced.
 
@@ -27,12 +27,13 @@ Structured expert judgement (SEJ) is an established method for estimating the li
 | --- | --- | --- |
 | 2025 SEJ split-panel Monte Carlo data | Original elicitation distributions and draws | [Study data repository: Zenodo record 10.5281/zenodo.23543612](https://doi.org/10.5281/zenodo.23543612); verify final filenames and release status |
 | Expert elicitation responses, calibration variables, process drivers | Original SEJ analysis and figures | Same study repository; verify file mapping |
-| IMBIE 2023 observational records | Antarctic and Greenland historical contributions | [Insert authoritative data/software citation, license, and download instructions] |
+| Ice-sheet mass-balance observational records | Antarctic and Greenland historical contributions | **IMBIE data:** Available through the UK Polar Data Centre under the Open Government Licence v3.0.<br><br>**Citation:** Otosaka, I. N., Shepherd, A., Amory, C., Horwath, M., Ivins, E. R., King, M. D., Nowicki, S., Payne, A. J., Rignot, E., Sørensen, L. S., Schlegel, N.-J., Simon, K. M., Smith, B. E., Sutterley, T. C., Van Den Broeke, M. R., Velicogna, I., A, G., Agosta, C., Ditmar, P., … Wouters, B. (2026). Mass balance of the Greenland and Antarctic ice sheets from the 1970s to 2023. *Scientific Data*, *13*(1), 1301. [https://doi.org/10.1038/s41597-026-08088-0](https://doi.org/10.1038/s41597-026-08088-0) |
 | FaIR2 CMIP6 GSAT and CMIP7 pathway GSAT | Scenario selection and interpolation | Generated with FACTS2/FaIR; archived files are intended for study data repository; verify provenance and names |
 | DeConto et al. (2021) EAIS and WAIS ensembles | Antarctic target temporal dependence | FACTS2 `deconto21-ais` inputs; [add dataset identifier/release] |
 | Fitted ISMIP6 Greenland correlation matrices | Greenland target temporal dependence | Study data repository/underlying fitted ISMIP6 resource; [confirm citation] |
 | emulandice EAIS, WAIS, GrIS outputs | Intermediate 2050 probabilistic constraints | FACTS2 emulandice experiments; [add version, DOI, and archived outputs] |
 | IPCC AR6 comparison inputs | Reference projections for selected figures | [Insert AR6 projection release and prescribed acknowledgement/citation] |
+
 
 
 ### Output data
