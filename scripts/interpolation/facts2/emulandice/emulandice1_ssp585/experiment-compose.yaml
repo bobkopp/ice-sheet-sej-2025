@@ -1,0 +1,89 @@
+services:
+   fair2-climate:
+      image: ghcr.io/fact-sealevel/fair2-climate:0.1.0
+      command:
+      - --pipeline-id=emulandice1
+      - --nsamps=2000
+      - --scenario=ssp585
+      - --pyear-start=2000
+      - --pyear-end=2100
+      - --reference-year=1750
+      - --cyear-start=1850
+      - --cyear-end=1900
+      - --smooth-win=19
+      - --seed=1234
+      - --rcmip-concentration-file=/mnt/module_specific_in/rcmip/rcmip-concentrations-annual-means-v5-1-0.csv
+      - --rcmip-emissions-file=/mnt/module_specific_in/rcmip/rcmip-emissions-annual-means-v5-1-0.csv
+      - --rcmip-forcing-file=/mnt/module_specific_in/rcmip/rcmip-radiative-forcing-annual-means-v5-1-0.csv
+      - --calibration-file=/mnt/module_specific_in/parameters/calibrated_constrained_parameters.csv
+      - --species-config-file=/mnt/module_specific_in/parameters/species_configs_properties_calibration1.2.0.csv
+      - --volcanic-erf=/mnt/module_specific_in/parameters/volcanic_ERF_1750-2101_timebounds.csv
+      - --solar-erf=/mnt/module_specific_in/parameters/solar_erf_timebounds.csv
+      - --output-climate-file=/mnt/out/fair2-climate/climate.nc
+      - --output-gsat-file=/mnt/out/fair2-climate/gsat.nc
+      - --output-oceantemp-file=/mnt/out/fair2-climate/ocean_temp.nc
+      - --output-ohc-file=/mnt/out/fair2-climate/ohc.nc
+      volumes:
+      - ${FACTS2_ROOT}/data/module_specific_input_data/fair2-climate:/mnt/module_specific_in
+      - ${FACTS2_ROOT}/experiments/emulandice1_ssp585/output:/mnt/out
+      restart: 'no'
+   emulandice-ais:
+      image: ghcr.io/fact-sealevel/emulandice:0.2.0
+      command:
+      - ais
+      - --pipeline-id=emulandice1
+      - --baseyear=2005
+      - --location-file=/mnt/shared_in/location.lst
+      - --fprint-wais-file=/mnt/shared_in/FPRINT/fprint_wais.nc
+      - --fprint-eais-file=/mnt/shared_in/FPRINT/fprint_eais.nc
+      - --chunksize=50
+      - --input-data-file=/mnt/out/fair2-climate/gsat.nc
+      - --output-gslr-file=/mnt/out/emulandice-ais/output-gslr.nc
+      - --output-gslr-wais-file=/mnt/out/emulandice-ais/output-gslr-wais.nc
+      - --output-gslr-eais-file=/mnt/out/emulandice-ais/output-gslr-eais.nc
+      - --output-gslr-pen-file=/mnt/out/emulandice-ais/output-gslr-pen.nc
+      volumes:
+      - ${FACTS2_ROOT}/data/module_specific_input_data/emulandice-ais:/mnt/module_specific_in
+      - ${FACTS2_ROOT}/data/shared_input_data:/mnt/shared_in
+      - ${FACTS2_ROOT}/experiments/emulandice1_ssp585/output:/mnt/out
+      restart: 'no'
+      depends_on:
+         fair2-climate:
+            condition: service_completed_successfully
+   emulandice-gris:
+      image: ghcr.io/fact-sealevel/emulandice:0.2.0
+      command:
+      - gris
+      - --pipeline-id=emulandice1
+      - --baseyear=2005
+      - --location-file=/mnt/shared_in/location.lst
+      - --fprint-gis-file=/mnt/shared_in/FPRINT/fprint_gis.nc
+      - --chunksize=50
+      - --input-data-file=/mnt/out/fair2-climate/gsat.nc
+      - --output-gslr-file=/mnt/out/emulandice-gris/output-gslr-gris.nc
+      volumes:
+      - ${FACTS2_ROOT}/data/module_specific_input_data/emulandice:/mnt/module_specific_in
+      - ${FACTS2_ROOT}/data/shared_input_data:/mnt/shared_in
+      - ${FACTS2_ROOT}/experiments/emulandice1_ssp585/output:/mnt/out
+      restart: 'no'
+      depends_on:
+         fair2-climate:
+            condition: service_completed_successfully
+   facts-total-all-modules-global:
+      image: ghcr.io/fact-sealevel/facts-total:0.2.1
+      command:
+      - --pyear-start=2000
+      - --pyear-end=2100
+      - --pyear-step=10
+      - --item=/mnt/total_out/emulandice-ais/output-gslr.nc
+      - --item=/mnt/total_out/emulandice-gris/output-gslr-gris.nc
+      - --output-path=/mnt/total_out/facts-total/all-modules_global_total.nc
+      volumes:
+      - ${FACTS2_ROOT}/data/shared_input_data:/mnt/shared_in
+      - ${FACTS2_ROOT}/experiments/emulandice1_ssp585/output:/mnt/total_out
+      restart: 'no'
+      depends_on:
+         emulandice-ais:
+            condition: service_completed_successfully
+         emulandice-gris:
+            condition: service_completed_successfully
