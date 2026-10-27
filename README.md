@@ -97,7 +97,12 @@ export SEJ_CORE_OUTPUT_ROOT="$PWD/output/reproduction_run_01"
 A valid `SEJ_DATA_DIR` contains `sej2025_SplitPanels_liz_updated.csv`, `historical_observations/imbie_2023/`, `fair_output/`, and `temporal_correlation_matrices/GrIS_FittedISMIP_scenario_specific/`. A valid `SEJ_FACTS2_ROOT` contains the referenced emulandice experiments, FaIR2 GSAT experiment outputs, and DeConto21 model inputs. The complete checks also inspect pathway-specific files.
 
 
-### 3. Inspect and execute the interpolation chain
+### 3. Reproduce original SEJ analyses
+
+The `scripts/original_sej/` scripts generate the original expert performance, driver, distribution, warming-reference and other figures from externally supplied elicitation/Monte Carlo files. Use the figure runner below or inspect each script's input configuration. Original expert judgement input creation is outside the scope of this repository.
+
+
+### 4. Inspect and execute the interpolation chain
 
 The runner starts in preview mode and prevents writing outside this repository's `output/` tree. It also refuses to overwrite previously generated stage results.
 
@@ -119,10 +124,6 @@ Select stage codes with `--stages` (comma-separated). Follow the runner's `--lis
 | `04` | Manuscript tables |
 | `05` | Formatted manuscript and supplementary tables; also requires `TABLE_OUTPUT_ROOT` under `output/` |
 
-
-### 4. Reproduce original SEJ analyses
-
-The `scripts/original_sej/` scripts generate the original expert performance, driver, distribution, warming-reference and other figures from externally supplied elicitation/Monte Carlo files. Use the figure runner below or inspect each script's input configuration. Original expert judgement input creation is outside the scope of this repository.
 
 
 ## Reproduce my figures
