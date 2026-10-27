@@ -1,4 +1,4 @@
-<img width="468" height="13" alt="image" src="https://github.com/user-attachments/assets/5d1a56d7-7400-4cd9-ae59-687ac99d33fa" /># Ice-sheet projections from structured expert judgement
+# Ice-sheet projections from structured expert judgement
 
 > **Publication metadata pending.** Add the final paper title, coauthors, journal citation, publication DOI, code-release DOI, and finalized licenses once confirmed. This is a pre-release research repository, not a claim that every workflow has been independently reproduced.
 
