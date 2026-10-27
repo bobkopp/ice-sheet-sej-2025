@@ -55,13 +55,13 @@ Structured expert judgement (SEJ) is an established method for estimating the li
 
 ```text
 scripts/
-  original_sej/       Original expert analysis, distributions and figures
-  interpolation/      Inputs, scenario selection, coupling, annual projections, tables and figures
-  shared/             Shared scientific labels, settings and path configuration
+  original_sej/       Original expert analysis, distributions, and figures
+  interpolation/      FACTS2 model runs, other inputs, scenario selection, coupling, annual projections, tables, and figures
+  shared/             Shared scientific labels, settings, and path configuration
   runners/            Two documented execution entry points
 figures/              Figure archive guidance (generated files not yet included)
 data/                 External-data staging instructions (large files excluded)
-docs/                 Figure manifest, portability notes and workflow documentation
+docs/                 Figure manifest, portability notes, and workflow documentation
 output/               Local generated products, ignored by Git
 ```
 
