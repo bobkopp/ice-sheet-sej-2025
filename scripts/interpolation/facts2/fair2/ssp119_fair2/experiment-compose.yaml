@@ -1,0 +1,29 @@
+services:
+   fair2-climate:
+      image: ghcr.io/fact-sealevel/fair2-climate:0.1.0
+      command:
+      - --pipeline-id=aaa
+      - --nsamps=10000
+      - --scenario=ssp119
+      - --pyear-start=2000
+      - --pyear-end=2300
+      - --reference-year=1750
+      - --cyear-start=1850
+      - --cyear-end=1900
+      - --smooth-win=19
+      - --seed=1234
+      - --rcmip-concentration-file=/mnt/module_specific_in/rcmip/rcmip-concentrations-annual-means-v5-1-0.csv
+      - --rcmip-emissions-file=/mnt/module_specific_in/rcmip/rcmip-emissions-annual-means-v5-1-0.csv
+      - --rcmip-forcing-file=/mnt/module_specific_in/rcmip/rcmip-radiative-forcing-annual-means-v5-1-0.csv
+      - --calibration-file=/mnt/module_specific_in/parameters/calibrated_constrained_parameters.csv
+      - --species-config-file=/mnt/module_specific_in/parameters/species_configs_properties_calibration1.2.0.csv
+      - --volcanic-erf=/mnt/module_specific_in/parameters/volcanic_ERF_1750-2101_timebounds.csv
+      - --solar-erf=/mnt/module_specific_in/parameters/solar_erf_timebounds.csv
+      - --output-climate-file=/mnt/out/fair2-climate/climate.nc
+      - --output-gsat-file=/mnt/out/fair2-climate/gsat.nc
+      - --output-oceantemp-file=/mnt/out/fair2-climate/ocean_temp.nc
+      - --output-ohc-file=/mnt/out/fair2-climate/ohc.nc
+      volumes:
+      - ${FACTS2_ROOT}/facts-module-registry/fair2-climate:/mnt/module_specific_in
+      - ${FACTS2_ROOT}/experiments/ssp119_fair2/output:/mnt/out
+      restart: 'no'

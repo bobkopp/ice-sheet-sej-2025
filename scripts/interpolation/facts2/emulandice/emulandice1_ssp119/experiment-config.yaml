@@ -1,0 +1,395 @@
+
+### Experiment configuration YAML file ###
+# This is the main configuration file that describes the specified FACTS experiment.
+# It is generated with prepopulated keys based on the modules you specified in `setup-new-experiment`.
+# The values included here are default values specified in this module's entry in the FACTS module registry (https://github.com/fact-sealevel/facts-module-registry).
+
+# **About this file:**
+# This file has three sections:
+# - The first section includes experiment-level information such as top-level parameter values, the modules and workflows included in the experiment, and paths to input and output data. 
+# - The second section includes values for module-specific options for each module included in the experiment. 
+# - The third section contains the module schema for each module included in the experiment. This is extracted from the module registry entry for a module using the state of the module registry at the time the experiment was created.
+
+# **How to use this file:**
+# 1. Fill in the desired values for the top-level parameters of the experiment.
+# 2. Specify the location of the input data to be used in this experiment.
+# 3. Specify the location file to be used in this experiment.
+# 4. Review the module-level inputs, options, and outputs to ensure they are correct.
+
+# **IMPORTANT**
+# This file does not 'run' a FACTS experiment, it merely specifies an experiment. Once you have completed filling out this file, run:
+# `uv run generate-compose <experiment_directorY> to generate a Docker Compose file that corresponds to this experiment.
+# Then, run `docker compose -f <compose_file> up` to run the experiment.
+
+# About this experiment:
+# Date created: 2026-10-12 12:00:22.771086
+
+experiment_name:
+        "experiments/emulandice1_ssp119"
+
+projection_scale:
+        global
+
+##----- Top-level params -----##
+pipeline-id:
+        # Pipeline ID
+        emulandice1
+nsamps:
+        # Number of samples
+        2000
+scenario:
+        # Emissions scenario name
+        ssp119
+pyear_start:
+        # Projection year start
+        2000
+pyear_end:
+        # Projection year end
+        2100
+baseyear:
+        # Base year to which projections should be referenced
+        2005
+location-file:
+        # File containing name, id, lat, and lon of points for localization
+        location.lst
+pyear_step:
+        # Enter pyear_step
+        10
+
+##----- Modules included in experiment -----##
+climate_module:
+        fair2-climate
+sealevel_modules:
+        - emulandice-ais
+        - emulandice-gris
+framework_modules:
+        - facts-total
+
+##----- Workflows (facts-total) -----##
+workflows:
+  all-modules: "emulandice-ais, emulandice-gris"
+
+##----- Inputs -----##
+module-specific-input-data:
+        # Module-specific input data
+        "${FACTS2_ROOT}/data/module_specific_input_data"
+shared-input-data:
+        # Shared input data
+        "${FACTS2_ROOT}/data/shared_input_data"
+experiment-specific-input-data:
+        # Experiment-specific input data (eg. alternative FAIR data)
+        []
+
+##----- Outputs -----##
+output-data-location:
+        # Output path
+        "${FACTS2_ROOT}/experiments/emulandice1_ssp119/output"
+
+
+##--------------------------------------------------------##
+##--------------------------------------------------------##
+##----- Module-specific inputs, options, and outputs -----##
+fair2-climate:
+  inputs:
+    rcmip-concentration-file:
+      # Path to RCMIP concentrations file
+      "rcmip/rcmip-concentrations-annual-means-v5-1-0.csv"  # filename from module defaults
+    rcmip-emissions-file:
+      # Path to RCMIP emissions file
+      "rcmip/rcmip-emissions-annual-means-v5-1-0.csv"  # filename from module defaults
+    rcmip-forcing-file:
+      # Path to RCMIP radiative forcing file
+      "rcmip/rcmip-radiative-forcing-annual-means-v5-1-0.csv"  # filename from module defaults
+    calibration-file:
+      # Path to calibrated constrained parameters file
+      "parameters/calibrated_constrained_parameters.csv"  # filename from module defaults
+    species-config-file:
+      # Path to species configuration properties file
+      "parameters/species_configs_properties_calibration1.2.0.csv"  # filename from module defaults
+    volcanic-erf:
+      # Path to volcanic ERF timebounds file
+      "parameters/volcanic_ERF_1750-2101_timebounds.csv"  # filename from module defaults
+    solar-erf:
+      # Path to solar ERF timebounds file
+      "parameters/solar_erf_timebounds.csv"  # filename from module defaults
+  options:
+    # Options inherited from top-level metadata: pipeline-id, nsamps, scenario, pyear-start, pyear-end
+    reference-year:
+      # Reference year for RCMIP data
+      1750  # user specified value
+    cyear-start:
+      # Start year of temporal range for centering
+      1850  # user specified value
+    cyear-end:
+      # End year of temporal range for centering
+      1900  # user specified value
+    smooth-win:
+      # Number of years to use as a smoothing window
+      19  # user specified value
+    seed:
+      # Seed for the random number generator.
+      1234  # user specified value
+  image: "ghcr.io/fact-sealevel/fair2-climate:0.1.0"
+  outputs:
+    output-climate-file:
+      value: "fair2-climate/climate.nc"
+      output_type: global
+    output-gsat-file:
+      value: "fair2-climate/gsat.nc"
+      output_type: global
+    output-oceantemp-file:
+      value: "fair2-climate/ocean_temp.nc"
+      output_type: global
+    output-ohc-file:
+      value: "fair2-climate/ohc.nc"
+      output_type: global
+emulandice-ais:
+  inputs:
+    input-data-file:
+      # Full path for temperature trajectory input file
+      "fair2-climate/gsat.nc"  # user specified value
+    forcing-head-path:
+      # Path to the climate forcing head CSV file (supplied via EMULANDICE_FORCING_HEAD_PATH env var by the container)
+  options:
+    # Options inherited from top-level metadata: pipeline-id, baseyear, location-file
+    chunksize:
+      # Number of locations to process at a time
+      50  # user specified value
+  image: "ghcr.io/fact-sealevel/emulandice:0.2.0"
+  outputs:
+    output-gslr-file:
+      value: "emulandice-ais/output-gslr.nc"
+      output_type: global
+    output-gslr-wais-file:
+      value: "emulandice-ais/output-gslr-wais.nc"
+      output_type: global
+    output-gslr-eais-file:
+      value: "emulandice-ais/output-gslr-eais.nc"
+      output_type: global
+    output-gslr-pen-file:
+      value: "emulandice-ais/output-gslr-pen.nc"
+      output_type: global
+    output-lslr-file:
+      value: "emulandice-ais/output-lslr.nc"
+      output_type: local
+    output-lslr-eais-file:
+      value: "emulandice-ais/output-lslr-eais.nc"
+      output_type: local
+    output-lslr-wais-file:
+      value: "emulandice-ais/output-lslr-wais.nc"
+      output_type: local
+  fingerprint_params:
+    fprint-wais-file:
+      # File containing WAIS fingerprint data
+      "FPRINT/fprint_wais.nc"  # filename from module defaults
+    fprint-eais-file:
+      # File containing EAIS fingerprint data
+      "FPRINT/fprint_eais.nc"  # filename from module defaults
+emulandice-gris:
+  inputs:
+    input-data-file:
+      # Full path for temperature trajectory input file
+      "fair2-climate/gsat.nc"  # user specified value
+    forcing-head-path:
+      # Path to the climate forcing head CSV file (supplied via EMULANDICE_FORCING_HEAD_PATH env var by the container)
+  options:
+    # Options inherited from top-level metadata: pipeline-id, baseyear, location-file
+    chunksize:
+      # Number of locations to process at a time
+      50  # user specified value
+  image: "ghcr.io/fact-sealevel/emulandice:0.2.0"
+  outputs:
+    output-gslr-file:
+      value: "emulandice-gris/output-gslr-gris.nc"
+      output_type: global
+    output-lslr-file:
+      value: "emulandice-gris/output-lslr-gris.nc"
+      output_type: local
+  fingerprint_params:
+    fprint-gis-file:
+      # File containing GIS fingerprint data
+      "FPRINT/fprint_gis.nc"  # filename from module defaults
+facts-total:
+  inputs:
+    item:
+      # Add your item here.
+  options:
+    # Options inherited from top-level metadata: pyear-start, pyear-end, pyear-step
+    name:
+      # Add your name here.
+  image: "ghcr.io/fact-sealevel/facts-total:0.2.1"
+  outputs:
+    output-path:
+      value: "facts-total/total.nc"
+      output_type: total
+  fingerprint_params:
+    fingerprint-dir:
+      # TO DO ADD HELP TEXT
+
+
+##--------------------------------------------------------##
+##--------------------------------------------------------##
+##----- Module schemas -----##
+module_registry_version: #Version of module registry used to generate this experiment configuration file.
+        local@a085795
+
+module_schemas:
+  fair2-climate:
+    module_name: fair2-climate
+    container_image: "ghcr.io/fact-sealevel/fair2-climate:0.1.0"
+    arguments:
+      top_level:
+        - {'name': 'pipeline-id', 'type': 'str', 'source': 'metadata.pipeline-id', 'help': 'Pipeline ID'}
+        - {'name': 'nsamps', 'type': 'int', 'source': 'metadata.nsamps', 'help': 'Number of samples'}
+        - {'name': 'scenario', 'type': 'str', 'source': 'metadata.scenario', 'help': 'Emissions scenario name', 'transform': 'scenario_name'}
+        - {'name': 'pyear-start', 'type': 'int', 'source': 'metadata.pyear_start', 'help': 'Projection year start'}
+        - {'name': 'pyear-end', 'type': 'int', 'source': 'metadata.pyear_end', 'help': 'Projection year end'}
+      options:
+        - {'name': 'reference-year', 'type': 'int', 'source': 'module_inputs.options.reference_year', 'help': 'Reference year for RCMIP data', 'optional': True, 'default_value': 1750}
+        - {'name': 'cyear-start', 'type': 'int', 'source': 'module_inputs.options.cyear_start', 'help': 'Start year of temporal range for centering', 'optional': True, 'default_value': 1850}
+        - {'name': 'cyear-end', 'type': 'int', 'source': 'module_inputs.options.cyear_end', 'help': 'End year of temporal range for centering', 'optional': True, 'default_value': 1900}
+        - {'name': 'smooth-win', 'type': 'int', 'source': 'module_inputs.options.smooth_win', 'help': 'Number of years to use as a smoothing window', 'optional': True, 'default_value': 19}
+        - {'name': 'seed', 'type': 'int', 'source': 'module_inputs.options.seed', 'help': 'Seed for the random number generator.', 'optional': False, 'default_value': 1234}
+      inputs:
+        - {'name': 'rcmip-concentration-file', 'type': 'file', 'source': 'module_inputs.inputs.rcmip_concentration_fname', 'help': 'Path to RCMIP concentrations file', 'mount': {'container_path': '/mnt/module_specific_in', 'volume': 'module_specific_in'}, 'filename': 'rcmip/rcmip-concentrations-annual-means-v5-1-0.csv'}
+        - {'name': 'rcmip-emissions-file', 'type': 'file', 'source': 'module_inputs.inputs.rcmip_emissions_fname', 'help': 'Path to RCMIP emissions file', 'mount': {'container_path': '/mnt/module_specific_in', 'volume': 'module_specific_in'}, 'filename': 'rcmip/rcmip-emissions-annual-means-v5-1-0.csv'}
+        - {'name': 'rcmip-forcing-file', 'type': 'file', 'source': 'module_inputs.inputs.rcmip_forcing_fname', 'help': 'Path to RCMIP radiative forcing file', 'mount': {'container_path': '/mnt/module_specific_in', 'volume': 'module_specific_in'}, 'filename': 'rcmip/rcmip-radiative-forcing-annual-means-v5-1-0.csv'}
+        - {'name': 'calibration-file', 'type': 'file', 'source': 'module_inputs.inputs.calibration_fname', 'help': 'Path to calibrated constrained parameters file', 'mount': {'container_path': '/mnt/module_specific_in', 'volume': 'module_specific_in'}, 'filename': 'parameters/calibrated_constrained_parameters.csv'}
+        - {'name': 'species-config-file', 'type': 'file', 'source': 'module_inputs.inputs.species_config_fname', 'help': 'Path to species configuration properties file', 'mount': {'container_path': '/mnt/module_specific_in', 'volume': 'module_specific_in'}, 'filename': 'parameters/species_configs_properties_calibration1.2.0.csv'}
+        - {'name': 'volcanic-erf', 'type': 'file', 'source': 'module_inputs.inputs.volcanic_erf_fname', 'help': 'Path to volcanic ERF timebounds file', 'mount': {'container_path': '/mnt/module_specific_in', 'volume': 'module_specific_in'}, 'filename': 'parameters/volcanic_ERF_1750-2101_timebounds.csv'}
+        - {'name': 'solar-erf', 'type': 'file', 'source': 'module_inputs.inputs.solar_erf_fname', 'help': 'Path to solar ERF timebounds file', 'mount': {'container_path': '/mnt/module_specific_in', 'volume': 'module_specific_in'}, 'filename': 'parameters/solar_erf_timebounds.csv'}
+      outputs:
+        files:
+          - {'name': 'output-climate-file', 'type': 'file', 'source': 'module_inputs.outputs.output_climate_file', 'help': 'Output climate file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'climate.nc', 'output_type': 'global'}
+          - {'name': 'output-gsat-file', 'type': 'file', 'source': 'module_inputs.outputs.output_gsat_file', 'help': 'Output GSAT file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'gsat.nc', 'output_type': 'global'}
+          - {'name': 'output-oceantemp-file', 'type': 'file', 'source': 'module_inputs.outputs.output_oceantemp_file', 'help': 'Output ocean temperature file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'ocean_temp.nc', 'output_type': 'global'}
+          - {'name': 'output-ohc-file', 'type': 'file', 'source': 'module_inputs.outputs.output_ohc_file', 'help': 'Output ocean heat content file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'ohc.nc', 'output_type': 'global'}
+    volumes:
+      module_specific_in:
+        host_path: module_inputs.input_paths.module_specific_input_dir
+        help: "TO DO ADD HELP TEXT"
+        container_path: "/mnt/module_specific_in"
+      output:
+        host_path: module_inputs.output_paths.output_dir
+        help: "TO DO ADD HELP TEXT"
+        container_path: "/mnt/out"
+    command: main
+    uses_climate_file: False
+    per_workflow: False
+    output_types:
+      - global
+      - local
+  emulandice-ais:
+    module_name: emulandice-ais
+    container_image: "ghcr.io/fact-sealevel/emulandice:0.2.0"
+    arguments:
+      top_level:
+        - {'name': 'pipeline-id', 'type': 'str', 'source': 'metadata.pipeline-id', 'help': 'Unique identifier for this instance of the module', 'optional': True}
+        - {'name': 'baseyear', 'type': 'int', 'source': 'metadata.baseyear', 'help': 'Base year to which projections should be referenced', 'optional': True}
+        - {'name': 'location-file', 'type': 'str', 'source': 'metadata.location-file', 'help': 'File containing name, id, lat, and lon of points for localization', 'optional': True, 'mount': {'container_path': '/mnt/shared_in', 'volume': 'input'}, 'transform': 'filename'}
+      options:
+        - {'name': 'chunksize', 'type': 'int', 'source': 'module_inputs.options.chunksize', 'help': 'Number of locations to process at a time', 'optional': True, 'default_value': 50}
+      inputs:
+        - {'name': 'input-data-file', 'type': 'file', 'source': 'module_inputs.inputs.input_data_file', 'help': 'Full path for temperature trajectory input file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'external_volume': True, 'climate_step_output': 'output-gsat-file'}
+        - {'name': 'forcing-head-path', 'type': 'file', 'source': 'module_inputs.inputs.forcing_head_path', 'help': 'Path to the climate forcing head CSV file (supplied via EMULANDICE_FORCING_HEAD_PATH env var by the container)', 'optional': True, 'mount': {'container_path': '/mnt/module_specific_in', 'volume': 'module_specific_input'}, 'envvar': 'EMULANDICE_FORCING_HEAD_PATH'}
+      outputs:
+        files:
+          - {'name': 'output-gslr-file', 'type': 'file', 'source': 'module_inputs.outputs.output_gslr_file', 'help': 'Path to write output global SLR file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'output-gslr.nc', 'output_type': 'global', 'pass_to_total': True}
+          - {'name': 'output-gslr-wais-file', 'type': 'file', 'source': 'module_inputs.outputs.output_gslr_wais_file', 'help': 'Path to write output global SLR file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'output-gslr-wais.nc', 'output_type': 'global', 'pass_to_total': False}
+          - {'name': 'output-gslr-eais-file', 'type': 'file', 'source': 'module_inputs.outputs.output_gslr_eais_file', 'help': 'Path to write output global SLR EAIS file', 'optional': True, 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'output-gslr-eais.nc', 'output_type': 'global', 'pass_to_total': False}
+          - {'name': 'output-gslr-pen-file', 'type': 'file', 'source': 'module_inputs.outputs.output_gslr_pen_file', 'help': 'Path to write output global SLR PEN file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'output-gslr-pen.nc', 'output_type': 'global', 'pass_to_total': False}
+          - {'name': 'output-lslr-file', 'type': 'file', 'source': 'module_inputs.outputs.output_lslr_file', 'help': 'Path to write output local SLR file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'output-lslr.nc', 'output_type': 'local', 'pass_to_total': True}
+          - {'name': 'output-lslr-eais-file', 'type': 'file', 'source': 'module_inputs.outputs.output_lslr_eais_file', 'help': 'Path to write output local SLR EAIS file', 'optional': True, 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'output-lslr-eais.nc', 'output_type': 'local', 'pass_to_total': False}
+          - {'name': 'output-lslr-wais-file', 'type': 'file', 'source': 'module_inputs.outputs.output_lslr_wais_file', 'help': 'Path to write output local SLR WAIS file', 'optional': True, 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'output-lslr-wais.nc', 'output_type': 'local', 'pass_to_total': False}
+      fingerprint_params:
+        - {'name': 'fprint-wais-file', 'type': 'str', 'source': 'module_inputs.fingerprint_params.fprint_wais_file', 'help': 'File containing WAIS fingerprint data', 'mount': {'container_path': '/mnt/shared_in', 'volume': 'shared_input'}, 'filename': 'FPRINT/fprint_wais.nc'}
+        - {'name': 'fprint-eais-file', 'type': 'str', 'source': 'module_inputs.fingerprint_params.fprint_eais_file', 'help': 'File containing EAIS fingerprint data', 'mount': {'container_path': '/mnt/shared_in', 'volume': 'shared_input'}, 'filename': 'FPRINT/fprint_eais.nc'}
+    volumes:
+      module_specific_input:
+        host_path: module_inputs.input_paths.module_specific_input_dir
+        help: "Module-specific input directory"
+        container_path: "/mnt/module_specific_in"
+      shared_input:
+        host_path: module_inputs.input_paths.shared_input_dir
+        help: "Shared input directory (fingerprints, location file)"
+        container_path: "/mnt/shared_in"
+      output:
+        host_path: module_inputs.output_paths.output_dir
+        help: "Output directory for SLR files"
+        container_path: "/mnt/out"
+    command: ais
+    uses_climate_file: True
+    per_workflow: False
+    output_types:
+      - global
+      - local
+  emulandice-gris:
+    module_name: emulandice-gris
+    container_image: "ghcr.io/fact-sealevel/emulandice:0.2.0"
+    arguments:
+      top_level:
+        - {'name': 'pipeline-id', 'type': 'str', 'source': 'metadata.pipeline-id', 'help': 'Unique identifier for this instance of the module', 'optional': True}
+        - {'name': 'baseyear', 'type': 'int', 'source': 'metadata.baseyear', 'help': 'Year from which to start integrating temperature', 'optional': True}
+        - {'name': 'location-file', 'type': 'str', 'source': 'metadata.location-file', 'help': 'File containing name, id, lat, and lon of points for localization', 'optional': True, 'mount': {'container_path': '/mnt/shared_in', 'volume': 'input'}, 'transform': 'filename'}
+      options:
+        - {'name': 'chunksize', 'type': 'int', 'source': 'module_inputs.options.chunksize', 'help': 'Number of locations to process at a time', 'optional': True, 'default_value': 50}
+      inputs:
+        - {'name': 'input-data-file', 'type': 'file', 'source': 'module_inputs.inputs.input_data_file', 'help': 'Full path for temperature trajectory input file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'external_volume': True, 'climate_step_output': 'output-gsat-file'}
+        - {'name': 'forcing-head-path', 'type': 'file', 'source': 'module_inputs.inputs.forcing_head_path', 'help': 'Path to the climate forcing head CSV file (supplied via EMULANDICE_FORCING_HEAD_PATH env var by the container)', 'optional': True, 'mount': {'container_path': '/mnt/module_specific_in', 'volume': 'module_specific_input'}, 'envvar': 'EMULANDICE_FORCING_HEAD_PATH'}
+      outputs:
+        files:
+          - {'name': 'output-gslr-file', 'type': 'file', 'source': 'module_inputs.outputs.output_gslr_file', 'help': 'Path to write output global SLR file', 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'output-gslr-gris.nc', 'output_type': 'global', 'pass_to_total': True}
+          - {'name': 'output-lslr-file', 'type': 'file', 'source': 'module_inputs.outputs.output_lslr_file', 'help': 'Path to write output local SLR file', 'optional': True, 'mount': {'container_path': '/mnt/out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'output-lslr-gris.nc', 'output_type': 'local', 'pass_to_total': True}
+      fingerprint_params:
+        - {'name': 'fprint-gis-file', 'type': 'str', 'source': 'module_inputs.fingerprint_params.fprint_gis_file', 'help': 'File containing GIS fingerprint data', 'mount': {'container_path': '/mnt/shared_in', 'volume': 'shared_input'}, 'filename': 'FPRINT/fprint_gis.nc'}
+    volumes:
+      module_specific_input:
+        host_path: module_inputs.input_paths.module_specific_input_dir
+        help: "Module-specific input directory"
+        container_path: "/mnt/module_specific_in"
+      shared_input:
+        host_path: module_inputs.input_paths.shared_input_dir
+        help: "Shared input directory (fingerprints, location file)"
+        container_path: "/mnt/shared_in"
+      output:
+        host_path: module_inputs.output_paths.output_dir
+        help: "Output directory for SLR files"
+        container_path: "/mnt/out"
+    command: gris
+    uses_climate_file: True
+    per_workflow: False
+    output_types:
+      - global
+      - local
+    input_dir_name: emulandice
+  facts-total:
+    module_name: facts-total
+    container_image: "ghcr.io/fact-sealevel/facts-total:0.2.1"
+    arguments:
+      top_level:
+        - {'name': 'pyear-start', 'type': 'int', 'source': 'metadata.pyear_start'}
+        - {'name': 'pyear-end', 'type': 'int', 'source': 'metadata.pyear_end'}
+        - {'name': 'pyear-step', 'type': 'int', 'source': 'metadata.pyear_step'}
+      options:
+        - {'name': 'name', 'type': 'str', 'source': 'module_inputs.options.name', 'optional': True}
+      inputs:
+        - {'name': 'item', 'type': 'file', 'source': 'module_inputs.inputs.item', 'mount': {'container_path': '/mnt/total_in', 'volume': 'input'}, 'multiple': True}
+      outputs:
+        files:
+          - {'name': 'output-path', 'type': 'file', 'source': 'module_inputs.outputs.output_path', 'mount': {'container_path': '/mnt/total_out', 'volume': 'output', 'transform': 'filename'}, 'filename': 'total.nc', 'output_type': 'total'}
+      fingerprint_params:
+        - {'name': 'fingerprint-dir', 'type': 'str', 'source': 'module_inputs.fingerprint_params.fingerprint_dir', 'help': 'TO DO ADD HELP TEXT', 'mount': {'container_path': '/mnt/shared_in', 'volume': 'input'}}
+    volumes:
+      shared_input:
+        host_path: module_inputs.input_paths.shared_input_dir
+        container_path: "/mnt/shared_in"
+      output:
+        host_path: module_inputs.output_paths.output_dir
+        container_path: "/mnt/total_out"
+    command: 
+    uses_climate_file: False
+    per_workflow: True
+    output_types:
+      - global
+      - local
+    skip_fingerprint_params: True
