@@ -1,6 +1,6 @@
 # Scientific inputs (external)
 
-Do not commit large scientific data here. Set `SEJ_DATA_DIR` to a separately downloaded or archived data folder. The full input inventory and source references are described in the top-level [`README.md`](../README.md).
+Set `SEJ_DATA_DIR` to a separately downloaded or archived data folder. The full input inventory and source references are described in the top-level [`README.md`](../README.md).
 
 The Stage 00 input check expects, among others:
 
